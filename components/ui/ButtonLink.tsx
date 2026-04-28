@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 const variants = {
   primary:
-    'border-accent bg-accent text-white hover:bg-accent-light hover:border-accent-light dark:border-slate-300 dark:bg-slate-200 dark:text-slate-950 dark:hover:bg-white',
+    'border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)] hover:opacity-90',
   secondary:
     'border-white/70 bg-white/10 text-white hover:bg-white/20 dark:border-slate-300 dark:bg-transparent dark:text-slate-100',
   outline:

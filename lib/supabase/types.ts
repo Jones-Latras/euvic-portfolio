@@ -59,6 +59,16 @@ export type SiteSetting = {
   updated_at: string | null
 }
 
+export type ContactMessage = {
+  id: string
+  name: string
+  email: string
+  subject: string | null
+  message: string
+  is_read: boolean | null
+  created_at: string | null
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -83,15 +93,7 @@ export type Database = {
         Update: Partial<Skill>
       }
       contact_messages: {
-        Row: {
-          id: string
-          name: string
-          email: string
-          subject: string | null
-          message: string
-          is_read: boolean | null
-          created_at: string | null
-        }
+        Row: ContactMessage
         Insert: {
           name: string
           email: string
@@ -99,7 +101,7 @@ export type Database = {
           message: string
           is_read?: boolean | null
         }
-        Update: Partial<Database['public']['Tables']['contact_messages']['Row']>
+        Update: Partial<ContactMessage>
       }
       site_settings: {
         Row: SiteSetting

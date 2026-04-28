@@ -1,9 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
+import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import type { About, Education, Project, SiteSetting, Skill } from '@/lib/supabase/types'
-
-const hasSupabaseEnv =
-  Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-  Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 export const fallbackSettings = {
   student_name: 'Your Name',
@@ -136,7 +133,7 @@ export const fallbackSkills: Skill[] = [
 ]
 
 export async function getSettings() {
-  if (!hasSupabaseEnv) return fallbackSettings
+  if (!hasSupabaseBrowserEnv) return fallbackSettings
   const supabase = await createClient()
   const { data } = await supabase.from('site_settings').select('*')
   return Object.fromEntries(
@@ -145,7 +142,7 @@ export async function getSettings() {
 }
 
 export async function getProjects() {
-  if (!hasSupabaseEnv) return fallbackProjects
+  if (!hasSupabaseBrowserEnv) return fallbackProjects
   const supabase = await createClient()
   const { data } = await supabase
     .from('projects')
@@ -161,7 +158,7 @@ export async function getFeaturedProjects() {
 }
 
 export async function getProjectBySlug(slug: string) {
-  if (!hasSupabaseEnv) return fallbackProjects.find((project) => project.slug === slug) ?? null
+  if (!hasSupabaseBrowserEnv) return fallbackProjects.find((project) => project.slug === slug) ?? null
   const supabase = await createClient()
   const { data } = await supabase
     .from('projects')
@@ -173,7 +170,7 @@ export async function getProjectBySlug(slug: string) {
 }
 
 export async function getAboutData() {
-  if (!hasSupabaseEnv) {
+  if (!hasSupabaseBrowserEnv) {
     return { about: fallbackAbout, education: fallbackEducation, skills: fallbackSkills }
   }
   const supabase = await createClient()

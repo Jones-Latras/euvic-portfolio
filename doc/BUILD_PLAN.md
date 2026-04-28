@@ -24,7 +24,7 @@
 | 1 | Supabase Backend Foundation | 🔲 PENDING | 2–3 hrs |
 | 2 | Next.js Project Scaffold | 🔄 IN PROGRESS | 1–2 hrs |
 | 3 | Public Pages — Core UI | 🔄 IN PROGRESS | 6–8 hrs |
-| 4 | Admin Panel — Auth & Shell | 🔲 PENDING | 3–4 hrs |
+| 4 | Admin Panel — Auth & Shell | 🔄 IN PROGRESS | 3–4 hrs |
 | 5 | Admin Panel — Content Management | 🔲 PENDING | 5–6 hrs |
 | 6 | API Routes & Email Integration | 🔄 IN PROGRESS | 2–3 hrs |
 | 7 | Filtering, SEO & Performance | 🔲 PENDING | 3–4 hrs |
@@ -651,40 +651,40 @@ All 5 public pages render correctly on mobile and desktop, data loads from Supab
 ---
 
 # PHASE 4 — Admin Panel — Auth & Shell
-**Status:** 🔲 PENDING  
+**Status:** 🔄 IN PROGRESS  
 **Goal:** Admin area is fully protected, session management works, and the admin layout shell is in place.
 
 ## 4.1 Login Page (`app/login/page.tsx`)
-- [ ] Email + password form
-- [ ] Submit: call `supabase.auth.signInWithPassword()`
-- [ ] On success: redirect to `/admin`
-- [ ] On error: display inline error message
-- [ ] "Forgot password" link (calls `supabase.auth.resetPasswordForEmail()`)
-- [ ] Page is publicly accessible (no auth guard)
-- [ ] Loading state on submit button
+- [x] Email + password form
+- [x] Submit: call `supabase.auth.signInWithPassword()`
+- [x] On success: redirect to `/admin`
+- [x] On error: display inline error message
+- [x] "Forgot password" link (calls `supabase.auth.resetPasswordForEmail()`)
+- [x] Page is publicly accessible (no auth guard)
+- [x] Loading state on submit button
 
 ## 4.2 Admin Auth Guard (`app/admin/layout.tsx`)
-- [ ] Server component: check session using server Supabase client
-- [ ] If no session: `redirect('/login')`
-- [ ] If session: render admin layout + children
-- [ ] This is the ONLY place the auth check is needed (all `/admin/*` routes inherit it)
+- [x] Server component: check session using server Supabase client
+- [x] If no session: `redirect('/login')` *(enforced when Supabase env vars are configured)*
+- [x] If session: render admin layout + children
+- [x] This is the ONLY place the auth check is needed (all `/admin/*` routes inherit it)
 
 ## 4.3 Admin Layout Shell (`components/layout/AdminSidebar.tsx`)
-- [ ] Sidebar navigation links:
+- [x] Sidebar navigation links:
   - Dashboard `/admin`
   - Projects `/admin/projects`
   - About Page `/admin/about`
   - Messages `/admin/messages` (with unread count badge)
   - Settings `/admin/settings`
-- [ ] Logout button at bottom: calls `supabase.auth.signOut()` → redirects to `/login`
-- [ ] Mobile: sidebar collapses into a top hamburger menu drawer
-- [ ] Active route is visually highlighted
+- [x] Logout button at bottom: calls `supabase.auth.signOut()` → redirects to `/login`
+- [x] Mobile: sidebar collapses into a top hamburger menu drawer
+- [x] Active route is visually highlighted
 
 ## 4.4 Admin Dashboard Overview (`app/admin/page.tsx`)
-- [ ] Stat cards: Total Projects, Published, Drafts, Total Messages, Unread Messages, Total View Count
-- [ ] "Quick Add Project" button → `/admin/projects/new`
-- [ ] Recent messages table (last 5, link to `/admin/messages`)
-- [ ] All data fetched server-side with `cache: 'no-store'`
+- [x] Stat cards: Total Projects, Published, Drafts, Total Messages, Unread Messages, Total View Count
+- [x] "Quick Add Project" button → `/admin/projects/new`
+- [x] Recent messages table (last 5, link to `/admin/messages`)
+- [x] All data fetched server-side with `cache: 'no-store'`
 
 ## ✅ Phase 4 Done When:
 Visiting `/admin` without a session redirects to `/login`. After login, the admin dashboard renders with stats. Logout clears the session.
