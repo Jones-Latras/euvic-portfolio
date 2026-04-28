@@ -1,10 +1,20 @@
-export default function AdminMessagesPage() {
+import { MessagesTable } from '@/components/admin/MessagesTable'
+import { getAdminMessages } from '@/lib/admin-data'
+
+export default async function AdminMessagesPage() {
+  const messages = await getAdminMessages()
+  const unread = messages.filter((message) => !message.is_read).length
+
   return (
-    <div className="border border-[var(--border)] bg-[var(--surface)] p-6">
-      <h1 className="text-3xl font-semibold">Messages</h1>
-      <p className="mt-3 max-w-prose text-sm leading-relaxed text-[var(--muted)]">
-        The inbox table belongs to Phase 5 after contact message storage is connected.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">Inbox</p>
+        <h1 className="mt-2 text-3xl font-semibold">Messages</h1>
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-[var(--muted)]">
+          {unread} unread of {messages.length} total messages.
+        </p>
+      </div>
+      <MessagesTable messages={messages} />
     </div>
   )
 }

@@ -41,3 +41,19 @@ export async function getAdminProjectById(id: string) {
   const { data } = await supabase.from('projects').select('*').eq('id', id).maybeSingle()
   return (data as Project | null) ?? null
 }
+
+export async function getAdminMessages() {
+  noStore()
+
+  if (!hasSupabaseBrowserEnv) {
+    return [] as ContactMessage[]
+  }
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('contact_messages')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  return (data ?? []) as ContactMessage[]
+}

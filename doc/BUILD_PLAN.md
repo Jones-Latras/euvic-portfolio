@@ -765,12 +765,12 @@ Used by both Create and Edit pages — accept optional initial data prop.
 - [ ] Single "Save All Changes" button — upserts `about` row, bulk-replaces `education` and `skills`
 
 ## 5.6 Messages Inbox (`app/admin/messages/page.tsx`)
-- [ ] Table: From, Subject, Date, Status (Read/Unread), Actions
-- [ ] Click row or "View" action: expand or navigate to full message detail
-- [ ] Mark as Read / Unread toggle
-- [ ] Delete message (with confirmation)
-- [ ] Unread messages visually distinct (bold row, colored dot indicator)
-- [ ] Count badge in sidebar reflects unread count
+- [x] Table: From, Subject, Date, Status (Read/Unread), Actions
+- [x] Click row or "View" action: expand or navigate to full message detail
+- [x] Mark as Read / Unread toggle
+- [x] Delete message (with confirmation)
+- [x] Unread messages visually distinct (bold row, colored dot indicator)
+- [x] Count badge in sidebar reflects unread count
 
 ## 5.7 Site Settings (`app/admin/settings/page.tsx`)
 - [ ] Form fields for all `site_settings` keys: student name, tagline, email, LinkedIn URL, Behance URL
