@@ -49,10 +49,10 @@
 - [ ] Create a **GitHub** repository named `arch-portfolio` (private)
 
 ## 0.2 Local Development Setup
-- [ ] Install Node.js ≥ 18.17 (`node -v` to verify)
-- [ ] Install pnpm: `npm install -g pnpm`
-- [ ] Install Supabase CLI: `brew install supabase/tap/supabase` (or npm equivalent)
-- [ ] Install Vercel CLI: `pnpm add -g vercel`
+- [x] Install Node.js ≥ 18.17 (`node -v` to verify; local version: v25.9.0)
+- [x] Install pnpm: `npm install -g pnpm` (local version: 10.33.2)
+- [!] Install Supabase CLI: `brew install supabase/tap/supabase` (or npm equivalent) *(blocked: Supabase CLI does not support global npm install; install via Scoop, Homebrew, or the official standalone package)*
+- [x] Install Vercel CLI: `pnpm add -g vercel` (verified via npm global install; local version: 52.0.0)
 
 ## 0.3 Environment Variables File
 - [ ] Create `.env.local` at project root with the following keys populated:
@@ -64,11 +64,11 @@
   CONTACT_FORM_TO_EMAIL=
   NEXT_PUBLIC_SITE_URL=http://localhost:3000
   ```
-- [ ] Add `.env.local` to `.gitignore` (verify it is NOT committed)
+- [x] Add `.env.local` to `.gitignore` (verify it is NOT committed)
 
 ## 0.4 VS Code / Editor Setup
 - [ ] Install extensions: ESLint, Prettier, Tailwind CSS IntelliSense, Supabase
-- [ ] Create `.prettierrc` with `{ "semi": false, "singleQuote": true, "tabWidth": 2 }`
+- [x] Create `.prettierrc` with `{ "semi": false, "singleQuote": true, "tabWidth": 2 }`
 - [ ] Create `.eslintrc.json` extending `next/core-web-vitals`
 
 ## ✅ Phase 0 Done When:
@@ -477,7 +477,7 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 - [x] Configure root `app/layout.tsx` with Google Fonts (DM Sans + DM Mono), ThemeProvider, Analytics wrapper, and global metadata defaults
 
 ## 2.7 Verify Scaffold
-- [!] Run `pnpm dev` — confirm app starts on `localhost:3000` with no TypeScript errors *(pnpm unavailable locally; npm scripts are configured)*
+- [x] Run `pnpm dev` — confirm app starts on `localhost:3000` with no TypeScript errors *(verified with `npm run dev`; pnpm unavailable locally)*
 - [x] Run `pnpm build` — confirm clean build with zero errors *(verified with `npm run build`)*
 - [ ] Commit: `git commit -m "chore: project scaffold, deps, supabase clients"`
 
@@ -881,7 +881,7 @@ Submitting the contact form inserts a row in Supabase AND sends an email to the 
 - [x] After admin saves changes, trigger `revalidatePath()` on relevant public routes
 
 ## 7.5 Performance Audit (Pre-Lighthouse)
-- [ ] Run `pnpm build && pnpm start` and audit with Chrome DevTools Network tab
+- [!] Run `pnpm build && pnpm start` and audit with Chrome DevTools Network tab *(local `npm run build` + `npm run start` verified; Chrome DevTools audit still pending)*
 - [x] Confirm no layout shift on hero image (set explicit width/height or use `fill` with a sized container)
 - [ ] Confirm no render-blocking scripts
 - [x] Add `@vercel/analytics` `<Analytics />` component to root layout
@@ -1014,7 +1014,7 @@ All Lighthouse scores ≥ 90 on all 4 public pages. No axe accessibility violati
 - [ ] Verifies homepage looks correct with real content
 
 ## 9.6 Admin Onboarding Guide
-- [ ] Create a simple `ADMIN_GUIDE.md` (or Notion page) for the student covering:
+- [x] Create a simple `ADMIN_GUIDE.md` (or Notion page) for the student covering:
   - How to log in
   - How to add a new project (step-by-step with screenshots)
   - How to upload images
@@ -1024,7 +1024,7 @@ All Lighthouse scores ≥ 90 on all 4 public pages. No axe accessibility violati
 
 ## 9.7 Final Verification
 - [ ] Homepage loads in < 2s on mobile (test with Chrome DevTools throttled to "Fast 3G")
-- [ ] All public pages return 200 status (no 404s or 500s)
+- [x] All public pages return 200 status (no 404s or 500s)
 - [ ] Contact form works end-to-end on production
 - [ ] CV download works
 - [ ] Admin login works on production URL
