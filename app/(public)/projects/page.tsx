@@ -47,8 +47,8 @@ export default async function ProjectsPage({
   const gridProjects = featuredProject ? result.projects.slice(1) : result.projects
 
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <section className="px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
+      <div className="mx-auto max-w-7xl space-y-5">
         <ProjectFilters
           category={params.category}
           tag={params.tag}
@@ -117,9 +117,9 @@ function FeaturedProject({ project }: { project: Project }) {
     <article className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]/80 shadow-2xl shadow-slate-950/5">
       <Link
         href={`/projects/${project.slug}`}
-        className="focus-ring group grid lg:grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.82fr)]"
+        className="focus-ring group grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
       >
-        <div className="relative aspect-[16/10] overflow-hidden bg-slate-200 lg:aspect-auto lg:min-h-[25rem]">
+        <div className="relative aspect-[16/10] overflow-hidden bg-slate-200 lg:aspect-auto lg:min-h-[21rem]">
           <Image
             src={image}
             alt={`${project.title} featured project preview`}
@@ -132,8 +132,8 @@ function FeaturedProject({ project }: { project: Project }) {
             Featured Case Study
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
-          <div className="space-y-5">
+        <div className="flex flex-col justify-between gap-6 p-5 sm:p-7 lg:p-8">
+          <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
                 {category}
@@ -143,7 +143,7 @@ function FeaturedProject({ project }: { project: Project }) {
               </span>
             </div>
             <div className="space-y-3">
-              <h2 className="font-display text-3xl font-semibold leading-tight transition-colors duration-200 group-hover:text-slate-600 dark:group-hover:text-white sm:text-4xl">
+              <h2 className="font-display text-3xl font-semibold leading-tight transition-colors duration-200 group-hover:text-slate-600 dark:group-hover:text-white">
                 {project.title}
               </h2>
               <p className="text-base leading-relaxed text-[var(--muted)]">
@@ -152,14 +152,14 @@ function FeaturedProject({ project }: { project: Project }) {
               </p>
             </div>
           </div>
-          <div className="space-y-5">
-            <dl className="grid gap-4 border-y border-[var(--border)] py-5 sm:grid-cols-3">
+          <div className="space-y-4">
+            <dl className="grid gap-4 border-y border-[var(--border)] py-4 sm:grid-cols-3">
               <Meta label="Role" value="Drafting + Visualization" />
               <Meta label="Tools" value={tools} />
               <Meta label="Year" value={formatYear(project.year)} />
             </dl>
             <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-200 group-hover:border-slate-500">
-              View Project
+              View Case Study
               <ArrowUpRight
                 aria-hidden="true"
                 size={16}
@@ -176,7 +176,7 @@ function FeaturedProject({ project }: { project: Project }) {
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="space-y-1">
-      <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
+      <dt className="font-mono text-[9px] uppercase tracking-[0.26em] text-[var(--muted)]">
         {label}
       </dt>
       <dd className="text-sm font-semibold">{value}</dd>

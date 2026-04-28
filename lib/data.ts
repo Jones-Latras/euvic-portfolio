@@ -22,7 +22,7 @@ export const fallbackSettings = {
 export const fallbackProjects: Project[] = [
   {
     id: 'sample-residence',
-    title: 'Compact Residence Drafting Set',
+    title: 'Compact Residence Drafting Package',
     slug: 'compact-residence-drafting-set',
     short_desc: 'A residential drawing package focused on efficient space planning and clear construction documentation.',
     description:

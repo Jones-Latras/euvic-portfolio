@@ -36,65 +36,25 @@ export function ProjectFilters({
   }
 
   return (
-    <section className="space-y-6 border-y border-[var(--border)] py-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <section className="space-y-4 border-b border-[var(--border)] pb-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-2">
           <SlidersHorizontal aria-hidden="true" size={18} className="text-[var(--muted)]" />
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
             Refine Gallery
           </p>
         </div>
-        {category || tag || sort ? (
-          <Link
-            href="/projects"
-            className="focus-ring inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-[var(--border)] px-4 text-sm font-semibold text-[var(--muted)] transition-all duration-200 ease-out hover:border-slate-500 hover:text-[var(--foreground)] active:scale-95 md:self-auto"
-          >
-            <RotateCcw aria-hidden="true" size={15} />
-            Reset
-          </Link>
-        ) : null}
-      </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end">
-        <div className="space-y-5">
-          <FilterGroup label="Project Type">
-            <FilterPill href={buildHref({ category: undefined, tag, sort })} active={!category} tone="primary">
-              All
-            </FilterPill>
-            {PROJECT_CATEGORIES.map((item) => (
-              <FilterPill
-                key={item.value}
-                href={buildHref({ category: item.value, tag, sort })}
-                active={category === item.value}
-                tone="primary"
-              >
-                {item.label}
-              </FilterPill>
-            ))}
-          </FilterGroup>
-
-          <FilterGroup label="Tools / Tags">
-            {PROJECT_TAGS.map((item) => (
-              <FilterPill
-                key={item}
-                href={buildHref({ category, tag: tag === item ? undefined : item, sort })}
-                active={tag === item}
-                tone="secondary"
-              >
-                {tagLabels[item] ?? item}
-              </FilterPill>
-            ))}
-          </FilterGroup>
-        </div>
-
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)]/70 p-4">
-          <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="flex min-h-10 items-center gap-4 rounded-full border border-[var(--border)] bg-[var(--surface)]/45 px-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
               {total} {total === 1 ? 'Project' : 'Projects'}
             </p>
+            <span aria-hidden="true" className="h-4 w-px bg-[var(--border)]" />
             <p className="text-xs font-semibold text-[var(--muted)]">Sort: {sortLabel}</p>
           </div>
-          <label className="block space-y-2">
+
+          <label className="block">
             <span className="sr-only">Sort projects</span>
             <div className="relative">
               <select
@@ -108,7 +68,7 @@ export function ProjectFilters({
                     })
                   )
                 }}
-                className="focus-ring min-h-12 w-full appearance-none rounded-md border border-[var(--border)] bg-[var(--background)] px-4 pr-10 text-sm font-semibold text-[var(--foreground)] transition-all duration-200 ease-out hover:border-slate-500"
+                className="focus-ring min-h-10 w-full appearance-none rounded-full border border-[var(--border)] bg-transparent px-4 pr-10 text-sm font-semibold text-[var(--foreground)] transition-all duration-200 ease-out hover:border-slate-500 sm:w-40"
               >
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
@@ -121,7 +81,52 @@ export function ProjectFilters({
               />
             </div>
           </label>
+
+          {category || tag || sort ? (
+            <Link
+              href="/projects"
+              className="focus-ring inline-flex min-h-10 items-center gap-2 self-start rounded-full border border-[var(--border)] px-4 text-sm font-semibold text-[var(--muted)] transition-all duration-200 ease-out hover:border-slate-500 hover:text-[var(--foreground)] active:scale-95 sm:self-auto"
+            >
+              <RotateCcw aria-hidden="true" size={15} />
+              Reset
+            </Link>
+          ) : null}
         </div>
+      </div>
+
+      <div className="space-y-3">
+        <FilterGroup label="Project Type">
+          <FilterPill
+            href={buildHref({ category: undefined, tag, sort })}
+            active={!category}
+            tone="primary"
+          >
+            All
+          </FilterPill>
+          {PROJECT_CATEGORIES.map((item) => (
+            <FilterPill
+              key={item.value}
+              href={buildHref({ category: item.value, tag, sort })}
+              active={category === item.value}
+              tone="primary"
+            >
+              {item.label}
+            </FilterPill>
+          ))}
+        </FilterGroup>
+
+        <FilterGroup label="Tools / Tags">
+          {PROJECT_TAGS.map((item) => (
+            <FilterPill
+              key={item}
+              href={buildHref({ category, tag: tag === item ? undefined : item, sort })}
+              active={tag === item}
+              tone="secondary"
+            >
+              {tagLabels[item] ?? item}
+            </FilterPill>
+          ))}
+        </FilterGroup>
       </div>
     </section>
   )
@@ -130,7 +135,7 @@ export function ProjectFilters({
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
+      <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[var(--muted)]">
         {label}
       </p>
       <div className="flex max-w-full gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
@@ -157,8 +162,8 @@ function FilterPill({
       className={cn(
         'focus-ring inline-flex shrink-0 items-center rounded-full border transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0',
         tone === 'primary'
-          ? 'min-h-11 px-4 text-sm font-semibold'
-          : 'min-h-9 px-3 text-xs font-semibold',
+          ? 'min-h-9 px-3.5 text-sm font-semibold'
+          : 'min-h-8 px-3 text-xs font-semibold',
         active
           ? 'border-slate-100 bg-slate-100 text-slate-950 shadow-lg shadow-slate-950/10 hover:bg-white dark:border-slate-100 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white'
           : 'border-[var(--border)] text-[var(--muted)] hover:border-slate-500 hover:bg-[var(--surface)] hover:text-[var(--foreground)]'
