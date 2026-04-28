@@ -19,7 +19,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className={cn(
-        'focus-ring inline-flex min-h-11 min-w-11 items-center justify-center border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50',
+        'focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/80 text-[var(--foreground)] transition-all duration-150 ease-in-out hover:border-slate-500 hover:bg-[var(--surface)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
     >

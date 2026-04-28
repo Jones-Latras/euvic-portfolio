@@ -100,8 +100,8 @@ function FilterPill({
       className={cn(
         'focus-ring inline-flex min-h-11 shrink-0 items-center border px-4 text-sm font-medium transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95',
         active
-          ? 'border-accent bg-accent text-white dark:border-slate-300 dark:bg-slate-200 dark:text-slate-950'
-          : 'border-[var(--border)] text-[var(--foreground)]'
+          ? 'border-accent bg-accent text-white hover:bg-accent-light active:bg-accent-light dark:border-slate-500 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600 dark:active:bg-slate-600'
+          : 'border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)] active:bg-accent active:text-white dark:active:bg-slate-700 dark:active:text-white'
       )}
     >
       {children}

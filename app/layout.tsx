@@ -1,15 +1,22 @@
 import type { Metadata } from 'next'
-import { DM_Mono, DM_Sans } from 'next/font/google'
+import { DM_Mono, Manrope, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { ToastProvider } from '@/components/ui/Toast'
+import { getSettings } from '@/lib/data'
 import './globals.css'
 
-const dmSans = DM_Sans({
+const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-dm-sans',
+  display: 'swap',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
   display: 'swap',
 })
 
@@ -38,14 +45,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const settings = await getSettings()
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${dmSans.variable} ${dmMono.variable} min-h-screen antialiased`}>
+      <body className={`${manrope.variable} ${spaceGrotesk.variable} ${dmMono.variable} min-h-screen antialiased`}>
         <ThemeProvider>
           <ToastProvider>
             <a
@@ -54,7 +63,7 @@ export default function RootLayout({
             >
               Skip to content
             </a>
-            <Header />
+            <Header studentName={settings.student_name || 'Euvic Abellano'} />
             <main id="main-content">{children}</main>
             <Footer />
           </ToastProvider>

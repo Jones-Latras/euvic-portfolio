@@ -10,12 +10,13 @@ import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import { cn } from '@/lib/utils'
 
 const navItems = [
+  { href: '/', label: 'Home' },
   { href: '/projects', label: 'Projects' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ]
 
-export function Header() {
+export function Header({ studentName = 'Euvic Abellano' }: { studentName?: string }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [hasSession, setHasSession] = useState(false)
@@ -38,15 +39,18 @@ export function Header() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/88 backdrop-blur">
-      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/86 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="focus-ring flex min-h-11 items-center text-sm font-semibold tracking-wide transition-all duration-150 ease-in-out hover:text-slate-600 active:scale-95 dark:hover:text-slate-300"
+          className="focus-ring flex min-h-11 flex-col justify-center transition-all duration-150 ease-in-out hover:text-slate-600 active:scale-95 dark:hover:text-slate-300"
         >
-          Architectural Portfolio
+          <span className="font-display text-[15px] font-semibold leading-none">{studentName}</span>
+          <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">
+            Drafting Portfolio
+          </span>
         </Link>
-        <nav aria-label="Primary" className="hidden items-center gap-2 md:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => {
             const active = pathname === item.href
             return (
@@ -55,8 +59,9 @@ export function Header() {
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'focus-ring flex min-h-11 items-center px-3 text-sm font-medium text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95',
-                  active && 'text-[var(--foreground)]'
+                  'focus-ring relative flex min-h-11 items-center px-3 text-sm font-semibold text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95',
+                  active &&
+                    'text-[var(--foreground)] after:absolute after:bottom-2 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-[var(--foreground)]'
                 )}
               >
                 {item.label}
@@ -68,7 +73,7 @@ export function Header() {
               href="/admin"
               aria-label="Admin dashboard"
               title="Admin dashboard"
-              className="focus-ring flex min-h-11 min-w-11 items-center justify-center text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95"
+            className="focus-ring flex min-h-11 min-w-11 items-center justify-center rounded-full text-[var(--muted)] transition-all duration-150 ease-in-out hover:bg-[var(--surface)] hover:text-[var(--foreground)] active:scale-95"
             >
               <LayoutDashboard aria-hidden="true" size={18} />
             </Link>
@@ -82,7 +87,7 @@ export function Header() {
             aria-label="Open navigation"
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
-            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center border border-[var(--border)] bg-[var(--surface)] transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95"
+            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95"
           >
             {open ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
           </button>

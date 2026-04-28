@@ -36,10 +36,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const [settings, projects] = await Promise.all([getSettings(), getFeaturedProjects()])
   const heroImage = settings.hero_image_url || ''
+  const valueStatement =
+    'Residential plans, 3D visualization, and space planning with clean technical precision.'
 
   return (
     <>
-      <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+      <section className="relative min-h-[calc(100vh-74px)] overflow-hidden">
         <Image
           src={heroImage}
           alt="Architectural portfolio hero image"
@@ -49,36 +51,59 @@ export default async function HomePage() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/82 via-slate-950/50 to-slate-950/20" />
-        <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl items-center px-4 py-20 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-6 text-white">
-            <p className="font-mono text-xs uppercase tracking-wide text-slate-200">
-              Architectural Drafting Portfolio
-            </p>
-            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              {settings.student_name || 'Your Name'}
-            </h1>
-            <p className="max-w-prose text-lg leading-relaxed text-slate-100">
-              {settings.tagline || 'Architectural Drafting & Design'}
-            </p>
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-              <ButtonLink href="/projects">View My Work</ButtonLink>
-              <ButtonLink href={settings.cv_url || '/about'} variant="secondary">
-                Download CV
-              </ButtonLink>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,14,25,0.88)_0%,rgba(9,14,25,0.68)_38%,rgba(9,14,25,0.28)_70%,rgba(9,14,25,0.12)_100%)]" />
+        <div className="blueprint-grid absolute inset-0 opacity-25" />
+        <div className="absolute bottom-12 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.28em] text-white/65 lg:flex">
+          <span className="[writing-mode:vertical-rl]">Scroll</span>
+          <span aria-hidden="true" className="h-8 w-px bg-white/45" />
+        </div>
+        <div className="absolute bottom-16 right-4 hidden font-mono text-[10px] uppercase tracking-[0.24em] text-white/60 sm:right-6 lg:right-8 lg:block">
+          Residential / Commercial / Drafting
+        </div>
+        <div className="relative mx-auto flex min-h-[calc(100vh-74px)] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
+          <div className="grid max-w-[720px] grid-cols-[1px_minmax(0,1fr)] gap-6 text-white lg:-translate-y-10 lg:gap-8">
+            <div className="mt-2 h-full min-h-72 bg-white/35" aria-hidden="true" />
+            <div className="space-y-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-slate-200 sm:text-xs">
+                Architectural Drafting Portfolio
+              </p>
+              <div className="space-y-4">
+                <h1 className="whitespace-nowrap font-display text-[clamp(2.75rem,5.7vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-white">
+                  {settings.student_name || 'Your Name'}
+                </h1>
+                <div className="space-y-3">
+                  <p className="font-display text-xl font-medium leading-snug text-slate-50 sm:text-2xl">
+                    {settings.tagline || 'Architectural Drafting & Design'}
+                  </p>
+                  <p className="max-w-[620px] text-base leading-relaxed text-slate-200 sm:text-lg">
+                    {valueStatement}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                <ButtonLink href="/projects">View Projects</ButtonLink>
+                <ButtonLink href={settings.cv_url || '/about'} variant="secondary">
+                  Download CV
+                </ButtonLink>
+              </div>
+              <div className="flex flex-wrap gap-3 pt-4 font-mono text-[10px] uppercase tracking-[0.24em] text-white/70">
+                <span>Selected Works 2024-2026</span>
+                <span className="hidden sm:inline">/</span>
+                <span>Technical Presentation Boards</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-[var(--background)] px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--background)] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl space-y-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div className="space-y-3">
               <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">
-                Selected Work
+                Selected Works
               </p>
-              <h2 className="text-3xl font-semibold">Featured Projects</h2>
+              <h2 className="font-display text-3xl font-semibold">Featured Projects</h2>
             </div>
             <Link
               href="/projects"
@@ -89,7 +114,7 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} variant="featured" />
             ))}
           </div>
         </div>

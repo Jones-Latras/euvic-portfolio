@@ -3,7 +3,7 @@ import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import type { About, Education, Project, SiteSetting, Skill } from '@/lib/supabase/types'
 
 export const fallbackSettings = {
-  student_name: 'Your Name',
+  student_name: 'Euvic G. Abellano',
   tagline: 'Architectural Drafting & Design',
   email: 'you@email.com',
   linkedin_url: '',
