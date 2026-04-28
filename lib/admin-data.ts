@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import { fallbackProjects } from '@/lib/data'
 import { fallbackSettings } from '@/lib/data'
-import type { ContactMessage, Project, SiteSetting } from '@/lib/supabase/types'
+import { getAboutData } from '@/lib/data'
+import type { About, ContactMessage, Education, Project, SiteSetting, Skill } from '@/lib/supabase/types'
 
 export async function getAdminDashboardData() {
   noStore()
@@ -83,5 +84,27 @@ export async function getAdminSettingsData() {
       ),
     },
     projects: (projects ?? []) as Project[],
+  }
+}
+
+export async function getAdminAboutEditorData() {
+  noStore()
+
+  if (!hasSupabaseBrowserEnv) {
+    return getAboutData()
+  }
+
+  const supabase = await createClient()
+  const [{ data: aboutRows }, { data: education }, { data: skills }] = await Promise.all([
+    supabase.from('about').select('*').limit(1),
+    supabase.from('education').select('*').order('sort_order'),
+    supabase.from('skills').select('*').order('sort_order'),
+  ])
+
+  const fallback = await getAboutData()
+  return {
+    about: ((aboutRows?.[0] as About | undefined) ?? fallback.about),
+    education: ((education ?? []) as Education[]).length ? ((education ?? []) as Education[]) : fallback.education,
+    skills: ((skills ?? []) as Skill[]).length ? ((skills ?? []) as Skill[]) : fallback.skills,
   }
 }

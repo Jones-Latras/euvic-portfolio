@@ -1,14 +1,16 @@
-export default function AdminAboutPage() {
-  return <AdminPlaceholder title="About Editor" />
-}
+import { AboutEditorForm } from '@/components/admin/AboutEditorForm'
+import { getAdminAboutEditorData } from '@/lib/admin-data'
 
-function AdminPlaceholder({ title }: { title: string }) {
+export default async function AdminAboutPage() {
+  const { about, education, skills } = await getAdminAboutEditorData()
+
   return (
-    <div className="border border-[var(--border)] bg-[var(--surface)] p-6">
-      <h1 className="text-3xl font-semibold">{title}</h1>
-      <p className="mt-3 max-w-prose text-sm leading-relaxed text-[var(--muted)]">
-        This editor is reserved for Phase 5 content management after Supabase Auth and Storage are connected.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">Content</p>
+        <h1 className="mt-2 text-3xl font-semibold">About Editor</h1>
+      </div>
+      <AboutEditorForm about={about} education={education} skills={skills} />
     </div>
   )
 }

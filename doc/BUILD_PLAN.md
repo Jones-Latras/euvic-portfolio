@@ -757,12 +757,12 @@ Used by both Create and Edit pages — accept optional initial data prop.
 - [x] On submit: `UPDATE projects WHERE id = ?`
 
 ## 5.5 About Page Editor (`app/admin/about/page.tsx`)
-- [ ] Bio: Markdown textarea + preview (same pattern as project description)
-- [ ] Profile Photo: single image uploader → `profile/photo` in Supabase Storage
-- [ ] CV PDF: single file uploader → `profile/cv.pdf` in Supabase Storage
-- [ ] Education Timeline manager: list of entries with Add/Edit/Delete; each entry: institution, program, start_year, end_year, gpa, sort_order
-- [ ] Skills manager: list of skills with Add/Edit/Delete; each: name, category select, level (1–5 select), sort_order
-- [ ] Single "Save All Changes" button — upserts `about` row, bulk-replaces `education` and `skills`
+- [x] Bio: Markdown textarea + preview (same pattern as project description)
+- [x] Profile Photo: single image uploader → `profile/photo` in Supabase Storage
+- [x] CV PDF: single file uploader → `profile/cv.pdf` in Supabase Storage
+- [x] Education Timeline manager: list of entries with Add/Edit/Delete; each entry: institution, program, start_year, end_year, gpa, sort_order
+- [x] Skills manager: list of skills with Add/Edit/Delete; each: name, category select, level (1–5 select), sort_order
+- [x] Single "Save All Changes" button — upserts `about` row, bulk-replaces `education` and `skills`
 
 ## 5.6 Messages Inbox (`app/admin/messages/page.tsx`)
 - [x] Table: From, Subject, Date, Status (Read/Unread), Actions
