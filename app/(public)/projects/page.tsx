@@ -1,8 +1,13 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { ProjectFilters } from '@/components/projects/ProjectFilters'
 import { getFilteredProjects, getSettings } from '@/lib/data'
+import { PROJECT_CATEGORIES } from '@/lib/constants'
+import type { Project } from '@/lib/supabase/types'
+import { formatYear } from '@/lib/utils'
 
 export const revalidate = 1800
 
@@ -38,27 +43,41 @@ export default async function ProjectsPage({
     page,
   })
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize))
+  const featuredProject = result.projects[0]
+  const gridProjects = featuredProject ? result.projects.slice(1) : result.projects
 
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
+    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-7xl space-y-8">
-        <div className="max-w-3xl space-y-4">
-          <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">
-            Portfolio Gallery
-          </p>
-          <h1 className="text-4xl font-semibold leading-tight">Projects</h1>
-          <p className="max-w-prose text-base leading-relaxed text-[var(--muted)]">
-            Technical drawings, design studies, rendering concepts, and documentation packages.
-          </p>
-        </div>
-        <ProjectFilters category={params.category} tag={params.tag} sort={params.sort} />
+        <ProjectFilters
+          category={params.category}
+          tag={params.tag}
+          sort={params.sort}
+          total={result.total}
+        />
         {result.projects.length ? (
           <>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {result.projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
+            {featuredProject ? <FeaturedProject project={featuredProject} /> : null}
+            {gridProjects.length ? (
+              <div className="space-y-5">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
+                      Project Index
+                    </p>
+                    <h2 className="mt-2 font-display text-2xl font-semibold">More Work</h2>
+                  </div>
+                  <p className="hidden text-sm text-[var(--muted)] sm:block">
+                    {gridProjects.length} shown on this page
+                  </p>
+                </div>
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  {gridProjects.map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <Pagination
               currentPage={result.page}
               totalPages={totalPages}
@@ -84,6 +103,94 @@ export default async function ProjectsPage({
       </div>
     </section>
   )
+}
+
+function FeaturedProject({ project }: { project: Project }) {
+  const image =
+    project.cover_image ||
+    'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1400&q=75'
+  const category =
+    PROJECT_CATEGORIES.find((item) => item.value === project.category)?.label ?? project.category
+  const tools = project.tags?.slice(0, 3).map(formatTag).join(' / ') || 'Drafting / Visualization'
+
+  return (
+    <article className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]/80 shadow-2xl shadow-slate-950/5">
+      <Link
+        href={`/projects/${project.slug}`}
+        className="focus-ring group grid lg:grid-cols-[minmax(0,1.18fr)_minmax(22rem,0.82fr)]"
+      >
+        <div className="relative aspect-[16/10] overflow-hidden bg-slate-200 lg:aspect-auto lg:min-h-[25rem]">
+          <Image
+            src={image}
+            alt={`${project.title} featured project preview`}
+            fill
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.035]"
+            quality={85}
+          />
+          <div className="absolute left-4 top-4 border border-white/40 bg-slate-950/35 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.24em] text-white backdrop-blur-md">
+            Featured Case Study
+          </div>
+        </div>
+        <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
+          <div className="space-y-5">
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+                {category}
+              </span>
+              <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+                {formatYear(project.year)}
+              </span>
+            </div>
+            <div className="space-y-3">
+              <h2 className="font-display text-3xl font-semibold leading-tight transition-colors duration-200 group-hover:text-slate-600 dark:group-hover:text-white sm:text-4xl">
+                {project.title}
+              </h2>
+              <p className="text-base leading-relaxed text-[var(--muted)]">
+                {project.short_desc ||
+                  'A selected drafting study focused on clear technical presentation and architectural communication.'}
+              </p>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <dl className="grid gap-4 border-y border-[var(--border)] py-5 sm:grid-cols-3">
+              <Meta label="Role" value="Drafting + Visualization" />
+              <Meta label="Tools" value={tools} />
+              <Meta label="Year" value={formatYear(project.year)} />
+            </dl>
+            <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-200 group-hover:border-slate-500">
+              View Project
+              <ArrowUpRight
+                aria-hidden="true"
+                size={16}
+                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </article>
+  )
+}
+
+function Meta({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
+        {label}
+      </dt>
+      <dd className="text-sm font-semibold">{value}</dd>
+    </div>
+  )
+}
+
+function formatTag(tag: string) {
+  return tag
+    .split('-')
+    .map((part) =>
+      part.length <= 3 ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)
+    )
+    .join(' ')
 }
 
 function Pagination({

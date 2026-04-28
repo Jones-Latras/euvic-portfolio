@@ -52,16 +52,19 @@ export function Header({ studentName = 'Euvic Abellano' }: { studentName?: strin
         </Link>
         <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => {
-            const active = pathname === item.href
+            const active =
+              item.href === '/' ? pathname === item.href : pathname.startsWith(item.href)
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'focus-ring relative flex min-h-11 items-center px-3 text-sm font-semibold text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95',
+                  'focus-ring relative flex min-h-10 items-center rounded-full border px-3.5 text-sm font-semibold transition-all duration-150 ease-in-out active:scale-95',
                   active &&
-                    'text-[var(--foreground)] after:absolute after:bottom-2 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-[var(--foreground)]'
+                    'border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm',
+                  !active &&
+                    'border-transparent text-[var(--muted)] hover:border-[var(--border)] hover:text-[var(--foreground)]'
                 )}
               >
                 {item.label}

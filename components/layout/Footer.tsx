@@ -1,33 +1,60 @@
 import Link from 'next/link'
-import { Download } from 'lucide-react'
+import { Download, Mail } from 'lucide-react'
 import { getSettings } from '@/lib/data'
 
 export async function Footer() {
   const settings = await getSettings()
   const year = new Date().getFullYear()
+  const email = settings.email || 'you@email.com'
 
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--surface)]">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold">{settings.student_name || 'Your Name'}</p>
-          <p className="max-w-prose text-sm leading-relaxed text-[var(--muted)]">
-            {settings.email || 'you@email.com'} · © {year}
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.2fr_1fr_auto] lg:px-8">
+        <div className="space-y-3">
+          <div>
+            <p className="font-display text-lg font-semibold">
+              {settings.student_name || 'Euvic G. Abellano'}
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
+              Architectural Drafting Portfolio
+            </p>
+          </div>
+          <p className="max-w-sm text-sm leading-relaxed text-[var(--muted)]">
+            Cagayan de Oro, PH. Residential plans, technical presentation boards, and
+            architectural visualization studies.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+
+        <nav aria-label="Footer navigation" className="flex flex-wrap content-start gap-2">
+          <FooterLink href="/">Home</FooterLink>
+          <FooterLink href="/projects">Projects</FooterLink>
+          <FooterLink href="/about">About</FooterLink>
+          <FooterLink href="/contact">Contact</FooterLink>
           {settings.linkedin_url ? <FooterLink href={settings.linkedin_url}>LinkedIn</FooterLink> : null}
           {settings.behance_url ? <FooterLink href={settings.behance_url}>Behance</FooterLink> : null}
           {settings.github_url ? <FooterLink href={settings.github_url}>GitHub</FooterLink> : null}
+        </nav>
+
+        <div className="flex flex-col items-start gap-3 md:items-end">
+          <Link
+            href={`mailto:${email}`}
+            className="focus-ring inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)] transition-all duration-200 ease-out hover:text-[var(--foreground)] active:scale-95"
+          >
+            <Mail aria-hidden="true" size={16} />
+            {email}
+          </Link>
           {settings.cv_url ? (
             <Link
               href={settings.cv_url}
-              className="focus-ring inline-flex min-h-11 items-center gap-2 border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95"
+              className="focus-ring inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500 active:translate-y-0"
             >
               <Download aria-hidden="true" size={16} />
-              CV
+              Download CV
             </Link>
           ) : null}
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+            © {year}
+          </p>
         </div>
       </div>
     </footer>
@@ -38,7 +65,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="focus-ring inline-flex min-h-11 items-center px-3 text-sm font-medium text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95"
+      className="focus-ring inline-flex min-h-11 items-center rounded-full border border-transparent px-3 text-sm font-semibold text-[var(--muted)] transition-all duration-200 ease-out hover:border-[var(--border)] hover:text-[var(--foreground)] active:scale-95"
     >
       {children}
     </Link>
