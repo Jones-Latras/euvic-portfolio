@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { LayoutDashboard, Menu, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ThemeToggle } from './ThemeToggle'
+import { createClient } from '@/lib/supabase/client'
+import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -16,6 +18,24 @@ const navItems = [
 export function Header() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [hasSession, setHasSession] = useState(false)
+
+  useEffect(() => {
+    if (!hasSupabaseBrowserEnv) return
+
+    const supabase = createClient()
+    void supabase.auth.getSession().then(({ data }) => {
+      setHasSession(Boolean(data.session))
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setHasSession(Boolean(session))
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/88 backdrop-blur">
@@ -43,12 +63,16 @@ export function Header() {
               </Link>
             )
           })}
-          <Link
-            href="/admin"
-            className="focus-ring flex min-h-11 items-center px-3 text-sm font-medium text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95"
-          >
-            Admin
-          </Link>
+          {hasSession ? (
+            <Link
+              href="/admin"
+              aria-label="Admin dashboard"
+              title="Admin dashboard"
+              className="focus-ring flex min-h-11 min-w-11 items-center justify-center text-[var(--muted)] transition-all duration-150 ease-in-out hover:text-[var(--foreground)] active:scale-95"
+            >
+              <LayoutDashboard aria-hidden="true" size={18} />
+            </Link>
+          ) : null}
           <ThemeToggle />
         </nav>
         <div className="flex items-center gap-2 md:hidden">
@@ -67,7 +91,7 @@ export function Header() {
       {open ? (
         <div className="border-t border-[var(--border)] bg-[var(--background)] px-4 py-3 md:hidden">
           <nav aria-label="Mobile primary" className="flex flex-col gap-1">
-            {[...navItems, { href: '/admin', label: 'Admin' }].map((item) => (
+            {[...navItems, ...(hasSession ? [{ href: '/admin', label: 'Admin' }] : [])].map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

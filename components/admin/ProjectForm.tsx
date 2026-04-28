@@ -103,11 +103,28 @@ export function ProjectForm({
 
   async function ensureUniqueSlug(slug: string) {
     if (!hasSupabaseEnv || !slug) return
+    const uniqueSlug = await getUniqueSlug(slug)
+    if (uniqueSlug !== slug) {
+      setValue('slug', uniqueSlug, { shouldValidate: true })
+    }
+  }
+
+  async function getUniqueSlug(slug: string) {
     const supabase = createClient()
-    const { data } = await supabase.from('projects').select('id, slug').eq('slug', slug).maybeSingle()
-    const existing = data as Pick<Project, 'id' | 'slug'> | null
-    if (existing && existing.id !== initialProject?.id) {
-      setValue('slug', `${slug}-${Date.now().toString().slice(-4)}`, { shouldValidate: true })
+    const baseSlug = slugify(slug)
+    let candidate = baseSlug
+    let suffix = 2
+
+    while (true) {
+      const { data } = await supabase
+        .from('projects')
+        .select('id, slug')
+        .eq('slug', candidate)
+        .maybeSingle()
+      const existing = data as Pick<Project, 'id' | 'slug'> | null
+      if (!existing || existing.id === initialProject?.id) return candidate
+      candidate = `${baseSlug}-${suffix}`
+      suffix += 1
     }
   }
 
@@ -122,10 +139,15 @@ export function ProjectForm({
       return
     }
 
+    const uniqueSlug = hasSupabaseEnv ? await getUniqueSlug(values.slug) : values.slug
+    if (uniqueSlug !== values.slug) {
+      setValue('slug', uniqueSlug, { shouldValidate: true })
+    }
+
     const payload = {
       id: projectId,
       title: values.title,
-      slug: values.slug,
+      slug: uniqueSlug,
       short_desc: values.short_desc || null,
       category: values.category,
       tags: values.tags,
@@ -155,7 +177,7 @@ export function ProjectForm({
     await fetch('/api/revalidate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paths: ['/', '/projects', `/projects/${values.slug}`] }),
+      body: JSON.stringify({ paths: ['/', '/projects', `/projects/${uniqueSlug}`] }),
     }).catch(() => undefined)
     router.push('/admin/projects')
     router.refresh()

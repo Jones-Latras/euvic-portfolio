@@ -40,11 +40,28 @@ export function ImageUploader({
   const [uploads, setUploads] = useState<UploadState[]>([])
 
   async function uploadImages(files: FileList | File[]) {
-    const validFiles = Array.from(files).filter((file) => {
+    const incomingFiles = Array.from(files)
+    const validFiles = incomingFiles.filter((file) => {
       const validType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
       const validSize = file.size <= 20 * 1024 * 1024
       return validType && validSize
     })
+    const rejectedFiles = incomingFiles.filter((file) => !validFiles.includes(file))
+
+    if (rejectedFiles.length) {
+      setUploads((current) => [
+        ...current,
+        ...rejectedFiles.map((file) => ({
+          name: file.name,
+          progress: 0,
+          error: file.size > 20 * 1024 * 1024
+            ? 'Image must be 20MB or smaller.'
+            : 'Use a JPG, PNG, or WEBP image.',
+        })),
+      ])
+    }
+
+    if (!validFiles.length) return
 
     if (!hasSupabaseEnv) {
       setUploads(validFiles.map((file) => ({ name: file.name, progress: 0, error: 'Supabase is not configured.' })))

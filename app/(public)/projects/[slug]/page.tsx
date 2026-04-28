@@ -4,12 +4,12 @@ import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { Metadata } from 'next'
-import { ArrowLeft, Download } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Download } from 'lucide-react'
 import { ViewTracker } from '@/components/projects/ViewTracker'
 import { LightboxGallery } from '@/components/projects/LightboxGallery'
 import { PROJECT_CATEGORIES } from '@/lib/constants'
 import { getProjectBySlug, getProjects } from '@/lib/data'
-import { absoluteUrl } from '@/lib/utils'
+import { absoluteUrl, cn } from '@/lib/utils'
 
 export const revalidate = 1800
 
@@ -47,9 +47,13 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const project = await getProjectBySlug(slug)
+  const [project, projects] = await Promise.all([getProjectBySlug(slug), getProjects()])
   if (!project) notFound()
 
+  const projectIndex = projects.findIndex((item) => item.slug === project.slug)
+  const previousProject = projectIndex > 0 ? projects[projectIndex - 1] : null
+  const nextProject =
+    projectIndex >= 0 && projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null
   const category =
     PROJECT_CATEGORIES.find((item) => item.value === project.category)?.label ?? project.category
   const specs =
@@ -116,7 +120,28 @@ export default async function ProjectDetailPage({
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="max-w-prose text-base leading-relaxed text-[var(--muted)]">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{project.description || ''}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: ({ children }) => (
+                  <h3 className="mt-8 text-2xl font-semibold text-[var(--foreground)]">
+                    {children}
+                  </h3>
+                ),
+                h2: ({ children }) => (
+                  <h3 className="mt-8 text-2xl font-semibold text-[var(--foreground)]">
+                    {children}
+                  </h3>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="mt-8 text-2xl font-semibold text-[var(--foreground)]">
+                    {children}
+                  </h3>
+                ),
+              }}
+            >
+              {project.description || ''}
+            </ReactMarkdown>
           </div>
           <aside className="space-y-6">
             {specs.length ? (
@@ -153,6 +178,63 @@ export default async function ProjectDetailPage({
           <LightboxGallery title={project.title} images={project.images} />
         </section>
       ) : null}
+      <ProjectNeighborNav previousProject={previousProject} nextProject={nextProject} />
     </article>
+  )
+}
+
+function ProjectNeighborNav({
+  previousProject,
+  nextProject,
+}: {
+  previousProject: Awaited<ReturnType<typeof getProjects>>[number] | null
+  nextProject: Awaited<ReturnType<typeof getProjects>>[number] | null
+}) {
+  if (!previousProject && !nextProject) return null
+
+  return (
+    <nav
+      aria-label="Adjacent projects"
+      className="border-t border-[var(--border)] px-4 py-8 sm:px-6 lg:px-8"
+    >
+      <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2">
+        <AdjacentProjectLink project={previousProject} direction="previous" />
+        <AdjacentProjectLink project={nextProject} direction="next" />
+      </div>
+    </nav>
+  )
+}
+
+function AdjacentProjectLink({
+  project,
+  direction,
+}: {
+  project: Awaited<ReturnType<typeof getProjects>>[number] | null
+  direction: 'previous' | 'next'
+}) {
+  if (!project) return <div aria-hidden="true" />
+
+  const isNext = direction === 'next'
+
+  return (
+    <Link
+      href={`/projects/${project.slug}`}
+      className={cn(
+        'focus-ring group flex min-h-24 flex-col justify-center border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-[0.99]',
+        isNext && 'sm:text-right'
+      )}
+    >
+      <span
+        className={cn(
+          'mb-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]',
+          isNext && 'sm:justify-end'
+        )}
+      >
+        {!isNext ? <ArrowLeft aria-hidden="true" size={14} /> : null}
+        {isNext ? 'Next Project' : 'Previous Project'}
+        {isNext ? <ArrowRight aria-hidden="true" size={14} /> : null}
+      </span>
+      <span className="text-base font-semibold">{project.title}</span>
+    </Link>
   )
 }

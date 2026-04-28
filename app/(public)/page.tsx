@@ -96,7 +96,7 @@ export default async function HomePage() {
       </section>
 
       <section className="border-y border-[var(--border)] bg-[var(--surface)] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto">
+        <div className="scroll-fade-in mx-auto flex max-w-7xl gap-3 overflow-x-auto">
           {skills.map((skill) => {
             const Icon = skill.icon
             return (
@@ -111,6 +111,21 @@ export default async function HomePage() {
           })}
         </div>
       </section>
+
+      {settings.quote_1_text ? (
+        <section className="bg-[var(--background)] px-4 py-16 sm:px-6 lg:px-8">
+          <figure className="mx-auto max-w-3xl space-y-5">
+            <blockquote className="text-2xl font-semibold leading-snug sm:text-3xl">
+              &ldquo;{settings.quote_1_text}&rdquo;
+            </blockquote>
+            {settings.quote_1_author ? (
+              <figcaption className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">
+                {settings.quote_1_author}
+              </figcaption>
+            ) : null}
+          </figure>
+        </section>
+      ) : null}
     </>
   )
 }

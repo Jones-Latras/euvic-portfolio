@@ -28,7 +28,7 @@
 | 5 | Admin Panel — Content Management | 🔄 IN PROGRESS | 5–6 hrs |
 | 6 | API Routes & Email Integration | 🔄 IN PROGRESS | 2–3 hrs |
 | 7 | Filtering, SEO & Performance | 🔄 IN PROGRESS | 3–4 hrs |
-| 8 | QA, Accessibility & Lighthouse | 🔲 PENDING | 2–3 hrs |
+| 8 | QA, Accessibility & Lighthouse | 🔄 IN PROGRESS | 2–3 hrs |
 | 9 | Deployment & Launch | 🔲 PENDING | 1–2 hrs |
 
 ---
@@ -497,7 +497,7 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 ### 3.1.1 Header / Navigation (`components/layout/Header.tsx`)
 - [x] Logo / student name (links to `/`)
 - [x] Nav links: Projects · About · Contact
-- [ ] Admin icon link (visible only when session exists)
+- [x] Admin icon link (visible only when session exists)
 - [x] Mobile hamburger menu — drawer on small screens, inline links on desktop
 - [x] All nav links have `hover`, `focus-visible`, and `active` states (150ms transition)
 - [x] Sticky header with subtle blur backdrop on scroll
@@ -535,10 +535,10 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 ### Skills Strip
 - [x] Horizontal scrolling row of skill icons/labels (AutoCAD, Revit, SketchUp, ArchiCAD, Adobe Suite, Hand Drafting)
 - [x] Use Lucide icons where available, or SVG badges
-- [ ] Subtle fade-in animation on scroll (CSS `@keyframes` or Intersection Observer)
+- [x] Subtle fade-in animation on scroll (CSS `@keyframes` or Intersection Observer)
 
 ### Testimonials (Optional)
-- [ ] Render quotes if any exist in `site_settings` (keys: `quote_1_text`, `quote_1_author`)
+- [x] Render quotes if any exist in `site_settings` (keys: `quote_1_text`, `quote_1_author`)
 - [x] Skip section entirely if no quotes configured
 
 ### ISR Revalidation
@@ -569,7 +569,7 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 - [x] Fetch projects filtered by `searchParams` (server component passes params to query)
 - [x] 1-col mobile, 2-col tablet, 3-col desktop
 - [x] Empty state: centered message "No projects found" + Reset button
-- [ ] Pagination: simple Prev/Next buttons with `?page=` param (12 projects per page)
+- [x] Pagination: simple Prev/Next buttons with `?page=` param (12 projects per page)
 - [x] All images lazy-loaded
 
 ### ISR Revalidation
@@ -596,7 +596,7 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 ### Project Description
 - [x] Render `description` (Markdown) via `react-markdown` + `remark-gfm`
 - [x] Style: prose typography, 60-75 char line width, 1.5x line height
-- [ ] Heading hierarchy starts at H3 (H1/H2 are used for page layout)
+- [x] Heading hierarchy starts at H3 (H1/H2 are used for page layout)
 
 ### Technical Specs Table
 - [x] Render `tech_specs` JSONB as key-value table
@@ -609,8 +609,8 @@ All tables exist, RLS policies pass the Supabase Policy Editor test, all 4 stora
 - [x] Icon: `lucide-react` Download icon
 
 ### Navigation
-- [ ] Previous project arrow (link to previous slug by created_at)
-- [ ] Next project arrow (link to next slug by created_at)
+- [x] Previous project arrow (link to previous slug by created_at)
+- [x] Next project arrow (link to next slug by created_at)
 - [x] "? Back to Gallery" text link at top
 
 ### View Count
@@ -882,7 +882,7 @@ Submitting the contact form inserts a row in Supabase AND sends an email to the 
 
 ## 7.5 Performance Audit (Pre-Lighthouse)
 - [ ] Run `pnpm build && pnpm start` and audit with Chrome DevTools Network tab
-- [ ] Confirm no layout shift on hero image (set explicit width/height or use `fill` with a sized container)
+- [x] Confirm no layout shift on hero image (set explicit width/height or use `fill` with a sized container)
 - [ ] Confirm no render-blocking scripts
 - [x] Add `@vercel/analytics` `<Analytics />` component to root layout
 
@@ -894,46 +894,46 @@ Filtering updates URL params, all public pages have unique meta tags visible in 
 ---
 
 # PHASE 8 — QA, Accessibility & Lighthouse
-**Status:** 🔲 PENDING  
+**Status:** 🔄 IN PROGRESS  
 **Goal:** Meet all non-functional requirements: Lighthouse ≥ 90, WCAG 2.1 AA, cross-browser, mobile-first.
 
 ## 8.1 Visual Hierarchy Review
 - [ ] Each screen uses only 3–4 distinct font sizes
 - [ ] One clear primary CTA per screen (others are ghost/outlined)
 - [ ] Related elements are visually grouped (proximity rule)
-- [ ] Body text line length ≤ 75 characters (max-w applied to prose containers)
-- [ ] Body text line height ≥ 1.5 (Tailwind: `leading-relaxed` or `leading-loose`)
+- [x] Body text line length ≤ 75 characters (max-w applied to prose containers)
+- [x] Body text line height ≥ 1.5 (Tailwind: `leading-relaxed` or `leading-loose`)
 
 ## 8.2 Interactive States Audit
-- [ ] Every button: `hover`, `focus-visible`, `active`, `disabled` states defined in Tailwind or CSS
-- [ ] No `outline: none` without a custom visible focus ring replacement
-- [ ] Submit buttons disable + show spinner immediately on click
-- [ ] All transitions use `duration-150` or `duration-200` (no instant flashes)
-- [ ] Skeleton loaders shown for project card grids (not spinners)
+- [x] Every button: `hover`, `focus-visible`, `active`, `disabled` states defined in Tailwind or CSS
+- [x] No `outline: none` without a custom visible focus ring replacement
+- [x] Submit buttons disable + show spinner immediately on click
+- [x] All transitions use `duration-150` or `duration-200` (no instant flashes)
+- [x] Skeleton loaders shown for project card grids (not spinners)
 
 ## 8.3 Responsive Design Check (Mobile-First)
 - [ ] Test at 375px width: no horizontal scroll, all content readable
 - [ ] Test at 768px (tablet): grid shifts to 2-col
 - [ ] Test at 1280px (desktop): full 3-col grid, sidebar nav visible
-- [ ] All click targets ≥ 44×44px (verify filter pills and icon buttons)
-- [ ] Admin sidebar collapses on mobile into hamburger drawer
+- [x] All click targets ≥ 44×44px (verify filter pills and icon buttons)
+- [x] Admin sidebar collapses on mobile into hamburger drawer
 
 ## 8.4 Dark Mode (if next-themes enabled)
-- [ ] Background uses `#111827` (not pure black)
-- [ ] Text uses `#e5e7eb` off-white (not pure white)
-- [ ] Card elevation shown by lighter surface color, not shadows
-- [ ] Accent colors are slightly de-saturated vs light mode
-- [ ] Theme toggle button exists and is accessible
-- [ ] `prefers-color-scheme` respected on first load
+- [x] Background uses `#111827` (not pure black)
+- [x] Text uses `#e5e7eb` off-white (not pure white)
+- [x] Card elevation shown by lighter surface color, not shadows
+- [x] Accent colors are slightly de-saturated vs light mode
+- [x] Theme toggle button exists and is accessible
+- [x] `prefers-color-scheme` respected on first load
 
 ## 8.5 Accessibility Checklist
-- [ ] All images have descriptive `alt` attributes (project images pull from admin-provided alt text field — if not added in Phase 5, add now)
-- [ ] Lightbox is keyboard navigable and has a visible close button with `aria-label`
-- [ ] Contact form fields all have associated `<label>` elements
-- [ ] Admin tables have proper `<th scope="col">` headers
+- [x] All images have descriptive `alt` attributes (project images pull from admin-provided alt text field — if not added in Phase 5, add now)
+- [x] Lightbox is keyboard navigable and has a visible close button with `aria-label`
+- [x] Contact form fields all have associated `<label>` elements
+- [x] Admin tables have proper `<th scope="col">` headers
 - [ ] Color contrast: run axe DevTools or Lighthouse — all text ≥ 4.5:1 ratio
 - [ ] Focus order is logical (tab through page without using mouse)
-- [ ] Skip-to-content link at top of page for screen readers
+- [x] Skip-to-content link at top of page for screen readers
 
 ## 8.6 Cross-Browser Testing
 - [ ] Chrome 100+ ✓
@@ -952,13 +952,13 @@ Filtering updates URL params, all public pages have unique meta tags visible in 
 - [ ] Fix any issues until all scores pass
 
 ## 8.8 Form & Edge Case Testing
-- [ ] Contact form: submit with empty fields → validation errors shown
-- [ ] Contact form: submit with honeypot filled → silently rejected
-- [ ] Project gallery: no published projects → empty state shown
-- [ ] Project detail: invalid slug → 404 page rendered (add `notFound()` call)
-- [ ] Admin: try accessing `/admin` without session → redirect to `/login`
-- [ ] Admin: upload file > 20MB → error message shown
-- [ ] Admin: create project with duplicate slug → auto-appends `-2` suffix
+- [x] Contact form: submit with empty fields → validation errors shown
+- [x] Contact form: submit with honeypot filled → silently rejected
+- [x] Project gallery: no published projects → empty state shown
+- [x] Project detail: invalid slug → 404 page rendered (add `notFound()` call)
+- [x] Admin: try accessing `/admin` without session → redirect to `/login`
+- [x] Admin: upload file > 20MB → error message shown
+- [x] Admin: create project with duplicate slug → auto-appends `-2` suffix
 
 ## ✅ Phase 8 Done When:
 All Lighthouse scores ≥ 90 on all 4 public pages. No axe accessibility violations. All interactive states are visible. Mobile layout at 375px is pixel-perfect.

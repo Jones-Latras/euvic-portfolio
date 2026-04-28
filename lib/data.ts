@@ -15,6 +15,8 @@ export const fallbackSettings = {
   seo_description: 'Showcasing architectural drafting and design work.',
   seo_og_image: '',
   cv_url: '',
+  quote_1_text: '',
+  quote_1_author: '',
 }
 
 export const fallbackProjects: Project[] = [
