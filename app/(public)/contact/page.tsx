@@ -5,6 +5,9 @@ import { getSettings } from '@/lib/data'
 export const metadata = {
   title: 'Contact',
   description: 'Contact the architectural drafting portfolio owner.',
+  alternates: {
+    canonical: '/contact',
+  },
 }
 
 export default async function ContactPage() {

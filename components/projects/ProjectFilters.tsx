@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { RotateCcw, SlidersHorizontal } from 'lucide-react'
 import { PROJECT_CATEGORIES, PROJECT_TAGS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,12 @@ export function ProjectFilters({
   tag?: string
   sort?: string
 }) {
+  const router = useRouter()
+
+  function pushHref(href: string) {
+    router.push(href)
+  }
+
   return (
     <section className="space-y-4 border-b border-[var(--border)] pb-6">
       <div className="flex items-center gap-2 text-sm font-semibold">
@@ -59,11 +66,13 @@ export function ProjectFilters({
         <select
           value={sort || 'newest'}
           onChange={(event) => {
-            window.location.href = buildHref({
-              category,
-              tag,
-              sort: event.target.value === 'newest' ? undefined : event.target.value,
-            })
+            pushHref(
+              buildHref({
+                category,
+                tag,
+                sort: event.target.value === 'newest' ? undefined : event.target.value,
+              })
+            )
           }}
           className="focus-ring min-h-11 w-full border border-[var(--border)] bg-[var(--surface)] px-3 text-sm transition-all duration-150 ease-in-out hover:border-slate-500"
         >

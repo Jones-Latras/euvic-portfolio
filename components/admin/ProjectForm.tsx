@@ -152,6 +152,11 @@ export function ProjectForm({
     }
 
     queueToast('Project saved.', 'success')
+    await fetch('/api/revalidate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paths: ['/', '/projects', `/projects/${values.slug}`] }),
+    }).catch(() => undefined)
     router.push('/admin/projects')
     router.refresh()
   }

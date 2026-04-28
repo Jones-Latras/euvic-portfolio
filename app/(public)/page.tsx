@@ -4,6 +4,7 @@ import { DraftingCompass, Layers, PenTool, Ruler, Shapes, View } from 'lucide-re
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { getFeaturedProjects, getSettings } from '@/lib/data'
+import type { Metadata } from 'next'
 
 export const revalidate = 3600
 
@@ -15,6 +16,22 @@ const skills = [
   { label: 'Adobe Suite', icon: View },
   { label: 'Hand Drafting', icon: PenTool },
 ]
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings()
+  return {
+    title: settings.seo_title || 'Portfolio | Architectural Design',
+    description: settings.seo_description || 'Showcasing architectural drafting and design work.',
+    openGraph: {
+      title: settings.seo_title || 'Portfolio | Architectural Design',
+      description: settings.seo_description || 'Showcasing architectural drafting and design work.',
+      images: settings.seo_og_image ? [settings.seo_og_image] : undefined,
+    },
+    alternates: {
+      canonical: '/',
+    },
+  }
+}
 
 export default async function HomePage() {
   const [settings, projects] = await Promise.all([getSettings(), getFeaturedProjects()])

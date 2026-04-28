@@ -35,6 +35,9 @@ export async function generateMetadata({
       description: project.short_desc || undefined,
       images: absoluteUrl(project.cover_image) ? [absoluteUrl(project.cover_image)!] : undefined,
     },
+    alternates: {
+      canonical: `/projects/${project.slug}`,
+    },
   }
 }
 

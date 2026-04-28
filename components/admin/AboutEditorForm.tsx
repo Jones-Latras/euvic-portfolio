@@ -128,6 +128,11 @@ export function AboutEditorForm({
 
     setSaving(false)
     setMessage('About page saved.')
+    await fetch('/api/revalidate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paths: ['/about'] }),
+    }).catch(() => undefined)
   }
 
   return (

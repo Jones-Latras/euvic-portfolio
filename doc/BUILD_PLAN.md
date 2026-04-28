@@ -27,7 +27,7 @@
 | 4 | Admin Panel — Auth & Shell | 🔄 IN PROGRESS | 3–4 hrs |
 | 5 | Admin Panel — Content Management | 🔄 IN PROGRESS | 5–6 hrs |
 | 6 | API Routes & Email Integration | 🔄 IN PROGRESS | 2–3 hrs |
-| 7 | Filtering, SEO & Performance | 🔲 PENDING | 3–4 hrs |
+| 7 | Filtering, SEO & Performance | 🔄 IN PROGRESS | 3–4 hrs |
 | 8 | QA, Accessibility & Lighthouse | 🔲 PENDING | 2–3 hrs |
 | 9 | Deployment & Launch | 🔲 PENDING | 1–2 hrs |
 
@@ -830,12 +830,12 @@ Submitting the contact form inserts a row in Supabase AND sends an email to the 
 ---
 
 # PHASE 7 — Filtering, SEO & Performance
-**Status:** 🔲 PENDING  
+**Status:** 🔄 IN PROGRESS  
 **Goal:** Filters work with shareable URLs, every page has proper SEO metadata, and all performance targets are met.
 
 ## 7.1 URL-Based Filtering
-- [ ] Gallery page reads `searchParams.category`, `searchParams.tag`, `searchParams.sort`, `searchParams.page`
-- [ ] Supabase query built dynamically:
+- [x] Gallery page reads `searchParams.category`, `searchParams.tag`, `searchParams.sort`, `searchParams.page`
+- [x] Supabase query built dynamically:
   ```typescript
   let query = supabase
     .from('projects')
@@ -850,25 +850,25 @@ Submitting the contact form inserts a row in Supabase AND sends an email to the 
 
   const { data } = await query.range(offset, offset + 11)
   ```
-- [ ] Filter tab clicks use `router.push()` with updated search params (no full page reload)
-- [ ] URL is shareable and bookmarkable — copy URL → paste in new tab → same filtered view
+- [x] Filter tab clicks use `router.push()` with updated search params (no full page reload)
+- [x] URL is shareable and bookmarkable — copy URL → paste in new tab → same filtered view
 
 ## 7.2 SEO Metadata
-- [ ] Root `app/layout.tsx`: default `metadata` object with site title template, description, OG image
-- [ ] Homepage: override metadata with `export const metadata` — pull from `site_settings`
-- [ ] Gallery page: static metadata "Portfolio Projects | [Name]"
-- [ ] Project detail: `generateMetadata()` returning title, description (`short_desc`), and OG image (`cover_image`)
+- [x] Root `app/layout.tsx`: default `metadata` object with site title template, description, OG image
+- [x] Homepage: override metadata with `export const metadata` — pull from `site_settings`
+- [x] Gallery page: static metadata "Portfolio Projects | [Name]"
+- [x] Project detail: `generateMetadata()` returning title, description (`short_desc`), and OG image (`cover_image`)
   - OG image should be absolute URL (prefix with `NEXT_PUBLIC_SITE_URL`)
-- [ ] About page: static metadata
-- [ ] Contact page: static metadata
-- [ ] All admin routes: `robots: { index: false }` to prevent indexing
-- [ ] Add `<link rel="canonical">` on all public pages
+- [x] About page: static metadata
+- [x] Contact page: static metadata
+- [x] All admin routes: `robots: { index: false }` to prevent indexing
+- [x] Add `<link rel="canonical">` on all public pages
 
 ## 7.3 Image Optimization
-- [ ] All `<Image>` components use correct `sizes` prop for their grid slot (e.g., `"(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"`)
-- [ ] Hero image: `priority={true}`, `quality={85}`
-- [ ] Gallery thumbnails: `quality={75}`, lazy loading (no `priority`)
-- [ ] Configure `next.config.js` to allow Supabase Storage hostname:
+- [x] All `<Image>` components use correct `sizes` prop for their grid slot (e.g., `"(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"`)
+- [x] Hero image: `priority={true}`, `quality={85}`
+- [x] Gallery thumbnails: `quality={75}`, lazy loading (no `priority`)
+- [x] Configure `next.config.js` to allow Supabase Storage hostname:
   ```javascript
   images: {
     remotePatterns: [{ hostname: '*.supabase.co' }]
@@ -876,15 +876,15 @@ Submitting the contact form inserts a row in Supabase AND sends an email to the 
   ```
 
 ## 7.4 ISR & Caching
-- [ ] Confirm `revalidate` export is set on all ISR pages (Phase 3 items)
-- [ ] Admin pages: `export const dynamic = 'force-dynamic'` to prevent caching
-- [ ] After admin saves changes, trigger `revalidatePath()` on relevant public routes
+- [x] Confirm `revalidate` export is set on all ISR pages (Phase 3 items)
+- [x] Admin pages: `export const dynamic = 'force-dynamic'` to prevent caching
+- [x] After admin saves changes, trigger `revalidatePath()` on relevant public routes
 
 ## 7.5 Performance Audit (Pre-Lighthouse)
 - [ ] Run `pnpm build && pnpm start` and audit with Chrome DevTools Network tab
 - [ ] Confirm no layout shift on hero image (set explicit width/height or use `fill` with a sized container)
 - [ ] Confirm no render-blocking scripts
-- [ ] Add `@vercel/analytics` `<Analytics />` component to root layout
+- [x] Add `@vercel/analytics` `<Analytics />` component to root layout
 
 ## ✅ Phase 7 Done When:
 Filtering updates URL params, all public pages have unique meta tags visible in browser devtools, `pnpm build` produces zero warnings about missing image `sizes` props.

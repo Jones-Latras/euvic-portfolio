@@ -152,6 +152,62 @@ export async function getProjects() {
   return data?.length ? data : fallbackProjects
 }
 
+export async function getFilteredProjects({
+  category,
+  tag,
+  sort,
+  page = 1,
+  pageSize = 12,
+}: {
+  category?: string
+  tag?: string
+  sort?: string
+  page?: number
+  pageSize?: number
+}) {
+  const safePage = Number.isFinite(page) && page > 0 ? page : 1
+  const offset = (safePage - 1) * pageSize
+
+  if (!hasSupabaseBrowserEnv) {
+    const filtered = fallbackProjects
+      .filter((project) => (!category ? true : project.category === category))
+      .filter((project) => (!tag ? true : project.tags?.includes(tag)))
+      .sort((a, b) => {
+        if (sort === 'oldest') return String(a.created_at).localeCompare(String(b.created_at))
+        if (sort === 'az') return a.title.localeCompare(b.title)
+        return String(b.created_at).localeCompare(String(a.created_at))
+      })
+
+    return {
+      projects: filtered.slice(offset, offset + pageSize),
+      total: filtered.length,
+      page: safePage,
+      pageSize,
+    }
+  }
+
+  const supabase = await createClient()
+  let query = supabase
+    .from('projects')
+    .select('*', { count: 'exact' })
+    .eq('is_published', true)
+
+  if (category) query = query.eq('category', category)
+  if (tag) query = query.contains('tags', [tag])
+  if (sort === 'oldest') query = query.order('created_at', { ascending: true })
+  else if (sort === 'az') query = query.order('title', { ascending: true })
+  else query = query.order('created_at', { ascending: false })
+
+  const { data, count } = await query.range(offset, offset + pageSize - 1)
+
+  return {
+    projects: data?.length ? data : [],
+    total: count ?? 0,
+    page: safePage,
+    pageSize,
+  }
+}
+
 export async function getFeaturedProjects() {
   const projects = await getProjects()
   return projects.filter((project) => project.is_featured).slice(0, 3)

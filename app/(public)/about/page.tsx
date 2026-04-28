@@ -10,6 +10,9 @@ export const revalidate = 3600
 export const metadata = {
   title: 'About',
   description: 'Background, education, and skills for the architectural drafting portfolio.',
+  alternates: {
+    canonical: '/about',
+  },
 }
 
 export default async function AboutPage() {

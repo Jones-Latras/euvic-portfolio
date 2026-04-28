@@ -121,6 +121,11 @@ export function SiteSettingsForm({
     setSaving(false)
     setMessage('Settings saved.')
     showToast('Settings saved.', 'success')
+    await fetch('/api/revalidate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paths: ['/', '/projects', '/about', '/contact'] }),
+    }).catch(() => undefined)
   }
 
   return (
