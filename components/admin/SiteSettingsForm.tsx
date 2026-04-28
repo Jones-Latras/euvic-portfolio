@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKETS } from '@/lib/constants'
 import type { Project } from '@/lib/supabase/types'
+import { useToast } from '@/components/ui/Toast'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -36,6 +37,7 @@ export function SiteSettingsForm({
   const ogInputRef = useRef<HTMLInputElement>(null)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const { showToast } = useToast()
   const [heroImage, setHeroImage] = useState(settings.hero_image_url || '')
   const [ogImage, setOgImage] = useState(settings.seo_og_image || '')
   const [featuredIds, setFeaturedIds] = useState(
@@ -51,11 +53,13 @@ export function SiteSettingsForm({
 
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
       setMessage('Use a JPG, PNG, or WEBP image.')
+      showToast('Use a JPG, PNG, or WEBP image.', 'error')
       return
     }
 
     if (!hasSupabaseEnv) {
       setMessage('Supabase credentials are not configured yet.')
+      showToast('Supabase credentials are not configured yet.', 'error')
       return
     }
 
@@ -68,6 +72,7 @@ export function SiteSettingsForm({
 
     if (error) {
       setMessage(error.message)
+      showToast(error.message, 'error')
       return
     }
 
@@ -91,6 +96,7 @@ export function SiteSettingsForm({
     if (!hasSupabaseEnv) {
       setSaving(false)
       setMessage('Supabase credentials are not configured yet.')
+      showToast('Supabase credentials are not configured yet.', 'error')
       return
     }
 
@@ -100,32 +106,21 @@ export function SiteSettingsForm({
       hero_image_url: heroImage,
       seo_og_image: ogImage,
     }
-    const now = new Date().toISOString()
-    const { error: settingsError } = await supabase.from('site_settings').upsert(
-      Object.entries(entries).map(([key, value]) => ({
-        key,
-        value,
-        updated_at: now,
-      })) as never
-    )
+    const { error: settingsError } = await supabase.rpc('save_site_settings', {
+      settings_payload: entries,
+      featured_project_ids: featuredIds,
+    } as never)
 
     if (settingsError) {
       setSaving(false)
       setMessage(settingsError.message)
+      showToast(settingsError.message, 'error')
       return
     }
 
-    await Promise.all(
-      projects.map((project) =>
-        supabase
-          .from('projects')
-          .update({ is_featured: featuredIds.includes(project.id) } as never)
-          .eq('id', project.id)
-      )
-    )
-
     setSaving(false)
     setMessage('Settings saved.')
+    showToast('Settings saved.', 'success')
   }
 
   return (

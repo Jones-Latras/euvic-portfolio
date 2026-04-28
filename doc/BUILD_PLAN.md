@@ -743,7 +743,7 @@ Used by both Create and Edit pages — accept optional initial data prop.
 - [x] "Save as Draft" button: saves with `is_published = false`
 - [x] "Publish" button: saves with `is_published = true`
 - [x] Both buttons: disable during save, show inline spinner
-- [ ] Success: toast notification + redirect to `/admin/projects`
+- [x] Success: toast notification + redirect to `/admin/projects`
 - [x] Validation: `react-hook-form` + `zod` schema covers all required fields
 
 ## 5.3 Create Project Page (`app/admin/projects/new/page.tsx`)
@@ -777,7 +777,7 @@ Used by both Create and Edit pages — accept optional initial data prop.
 - [x] Hero Image: single image uploader → `site-assets/hero.jpg`
 - [x] Featured Projects Picker: select up to 3 published projects (checkbox list) → sets `is_featured`
 - [x] SEO: default meta title, description, OG image upload
-- [ ] Save button: upserts all settings rows in a single transaction
+- [x] Save button: upserts all settings rows in a single transaction
 
 ## ✅ Phase 5 Done When:
 Student can: log in, create a project with images and specs, publish it, see it appear on the public gallery, edit it, and delete it — entirely through the UI with no code changes.

@@ -114,6 +114,10 @@ export type Database = {
         Args: { project_slug: string }
         Returns: undefined
       }
+      save_site_settings: {
+        Args: { settings_payload: Json; featured_project_ids: string[] }
+        Returns: undefined
+      }
     }
   }
 }

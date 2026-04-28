@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Project } from '@/lib/supabase/types'
 import { slugify } from '@/lib/utils'
 import { ImageUploader } from './ImageUploader'
+import { queueToast, useToast } from '@/components/ui/Toast'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -40,6 +41,7 @@ export function ProjectForm({
   initialProject?: Project | null
 }) {
   const router = useRouter()
+  const { showToast } = useToast()
   const [message, setMessage] = useState('')
   const [saving, setSaving] = useState<'draft' | 'publish' | null>(null)
   const [slugTouched, setSlugTouched] = useState(Boolean(initialProject?.slug))
@@ -116,6 +118,7 @@ export function ProjectForm({
     if (!hasSupabaseEnv) {
       setSaving(null)
       setMessage('Supabase credentials are not configured yet.')
+      showToast('Supabase credentials are not configured yet.', 'error')
       return
     }
 
@@ -144,10 +147,11 @@ export function ProjectForm({
     setSaving(null)
     if (error) {
       setMessage(error.message)
+      showToast(error.message, 'error')
       return
     }
 
-    setMessage('Project saved.')
+    queueToast('Project saved.', 'success')
     router.push('/admin/projects')
     router.refresh()
   }

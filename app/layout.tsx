@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { ToastProvider } from '@/components/ui/Toast'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -46,15 +47,17 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${dmSans.variable} ${dmMono.variable} min-h-screen antialiased`}>
         <ThemeProvider>
-          <a
-            href="#main-content"
-            className="focus-ring sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-slate-950"
-          >
-            Skip to content
-          </a>
-          <Header />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <ToastProvider>
+            <a
+              href="#main-content"
+              className="focus-ring sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-slate-950"
+            >
+              Skip to content
+            </a>
+            <Header />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </ToastProvider>
         </ThemeProvider>
         <Analytics />
       </body>
