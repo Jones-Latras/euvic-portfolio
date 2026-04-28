@@ -29,3 +29,15 @@ export async function getAdminDashboardData() {
     messages: (messages ?? []) as ContactMessage[],
   }
 }
+
+export async function getAdminProjectById(id: string) {
+  noStore()
+
+  if (!hasSupabaseBrowserEnv) {
+    return fallbackProjects.find((project) => project.id === id) ?? null
+  }
+
+  const supabase = await createClient()
+  const { data } = await supabase.from('projects').select('*').eq('id', id).maybeSingle()
+  return (data as Project | null) ?? null
+}

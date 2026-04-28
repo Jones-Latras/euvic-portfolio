@@ -25,7 +25,7 @@
 | 2 | Next.js Project Scaffold | 🔄 IN PROGRESS | 1–2 hrs |
 | 3 | Public Pages — Core UI | 🔄 IN PROGRESS | 6–8 hrs |
 | 4 | Admin Panel — Auth & Shell | 🔄 IN PROGRESS | 3–4 hrs |
-| 5 | Admin Panel — Content Management | 🔲 PENDING | 5–6 hrs |
+| 5 | Admin Panel — Content Management | 🔄 IN PROGRESS | 5–6 hrs |
 | 6 | API Routes & Email Integration | 🔄 IN PROGRESS | 2–3 hrs |
 | 7 | Filtering, SEO & Performance | 🔲 PENDING | 3–4 hrs |
 | 8 | QA, Accessibility & Lighthouse | 🔲 PENDING | 2–3 hrs |
@@ -694,67 +694,67 @@ Visiting `/admin` without a session redirects to `/login`. After login, the admi
 ---
 
 # PHASE 5 — Admin Panel — Content Management
-**Status:** 🔲 PENDING  
+**Status:** 🔄 IN PROGRESS  
 **Goal:** The student can create, edit, delete, and publish projects entirely through the admin UI without touching code.
 
 ## 5.1 Projects List (`app/admin/projects/page.tsx`)
-- [ ] Table with columns: Cover Thumbnail, Title, Category, Status (Published/Draft), View Count, Created Date, Actions
-- [ ] Actions: Edit (→ `/admin/projects/[id]/edit`), Delete (confirm dialog), Toggle Published
-- [ ] "New Project" button at top right
-- [ ] Sort by Created Date descending (newest first)
-- [ ] Delete: calls Supabase delete + also deletes associated Storage files
-- [ ] Status toggle: instant optimistic update + Supabase patch
+- [x] Table with columns: Cover Thumbnail, Title, Category, Status (Published/Draft), View Count, Created Date, Actions
+- [x] Actions: Edit (→ `/admin/projects/[id]/edit`), Delete (confirm dialog), Toggle Published
+- [x] "New Project" button at top right
+- [x] Sort by Created Date descending (newest first)
+- [x] Delete: calls Supabase delete + also deletes associated Storage files
+- [x] Status toggle: instant optimistic update + Supabase patch
 
 ## 5.2 Project Form (Shared `components/admin/ProjectForm.tsx`)
 Used by both Create and Edit pages — accept optional initial data prop.
 
 ### Basic Fields
-- [ ] Title: text input (required)
-- [ ] Slug: text input, auto-populated from title via `slugify()`, user can override; validate uniqueness on blur
-- [ ] Short Description: textarea, max 160 chars with live char counter
-- [ ] Category: select from `PROJECT_CATEGORIES` constants (required)
-- [ ] Tags: multi-select checkboxes from `PROJECT_TAGS` constants
-- [ ] Year / Semester: text input (e.g., "2025" or "2nd Year - Sem 2")
+- [x] Title: text input (required)
+- [x] Slug: text input, auto-populated from title via `slugify()`, user can override; validate uniqueness on blur
+- [x] Short Description: textarea, max 160 chars with live char counter
+- [x] Category: select from `PROJECT_CATEGORIES` constants (required)
+- [x] Tags: multi-select checkboxes from `PROJECT_TAGS` constants
+- [x] Year / Semester: text input (e.g., "2025" or "2nd Year - Sem 2")
 
 ### Content Fields
-- [ ] Full Description: Markdown editor — use a `<textarea>` with split preview pane (show rendered markdown side-by-side on desktop, toggle on mobile)
-- [ ] Technical Specs: dynamic key-value pair builder — "Add Spec" button adds a row with key input + value input; existing rows can be deleted
+- [x] Full Description: Markdown editor — use a `<textarea>` with split preview pane (show rendered markdown side-by-side on desktop, toggle on mobile)
+- [x] Technical Specs: dynamic key-value pair builder — "Add Spec" button adds a row with key input + value input; existing rows can be deleted
 
 ### Toggles
-- [ ] Featured: checkbox toggle (`is_featured`)
-- [ ] Published: checkbox toggle (`is_published`)
+- [x] Featured: checkbox toggle (`is_featured`)
+- [x] Published: checkbox toggle (`is_published`)
 
 ### Image Upload (`components/admin/ImageUploader.tsx`)
-- [ ] Drag-and-drop zone using native HTML drag events (no library needed for MVP)
-- [ ] Also supports click-to-browse file picker
-- [ ] Accepted types: JPG, PNG, WEBP — max 20MB per file
-- [ ] On drop: upload each file to `project-images/{project_id}/` in Supabase Storage
-- [ ] Show upload progress per file (percentage bar)
-- [ ] After upload: display thumbnail grid of all uploaded images
-- [ ] Cover Image Selector: radio-button overlay on each thumbnail to set as cover
-- [ ] Delete button on each thumbnail: removes from Storage + updates `images[]` array
+- [x] Drag-and-drop zone using native HTML drag events (no library needed for MVP)
+- [x] Also supports click-to-browse file picker
+- [x] Accepted types: JPG, PNG, WEBP — max 20MB per file
+- [x] On drop: upload each file to `project-images/{project_id}/` in Supabase Storage
+- [x] Show upload progress per file (percentage bar)
+- [x] After upload: display thumbnail grid of all uploaded images
+- [x] Cover Image Selector: radio-button overlay on each thumbnail to set as cover
+- [x] Delete button on each thumbnail: removes from Storage + updates `images[]` array
 
 ### PDF Upload
-- [ ] Single file input for PDF — max 50MB
-- [ ] Upload to `project-pdfs/{project_id}/` in Supabase Storage
-- [ ] Show filename + "Remove" button if already uploaded
+- [x] Single file input for PDF — max 50MB
+- [x] Upload to `project-pdfs/{project_id}/` in Supabase Storage
+- [x] Show filename + "Remove" button if already uploaded
 
 ### Form Actions
-- [ ] "Save as Draft" button: saves with `is_published = false`
-- [ ] "Publish" button: saves with `is_published = true`
-- [ ] Both buttons: disable during save, show inline spinner
+- [x] "Save as Draft" button: saves with `is_published = false`
+- [x] "Publish" button: saves with `is_published = true`
+- [x] Both buttons: disable during save, show inline spinner
 - [ ] Success: toast notification + redirect to `/admin/projects`
-- [ ] Validation: `react-hook-form` + `zod` schema covers all required fields
+- [x] Validation: `react-hook-form` + `zod` schema covers all required fields
 
 ## 5.3 Create Project Page (`app/admin/projects/new/page.tsx`)
-- [ ] Generates a new UUID for project ID before rendering (needed for Storage path)
-- [ ] Renders `<ProjectForm />` with no initial data
-- [ ] On submit: `INSERT INTO projects` with all form data
+- [x] Generates a new UUID for project ID before rendering (needed for Storage path)
+- [x] Renders `<ProjectForm />` with no initial data
+- [x] On submit: `INSERT INTO projects` with all form data
 
 ## 5.4 Edit Project Page (`app/admin/projects/[id]/edit/page.tsx`)
-- [ ] Fetch project by ID server-side
-- [ ] Renders `<ProjectForm />` pre-populated with existing data
-- [ ] On submit: `UPDATE projects WHERE id = ?`
+- [x] Fetch project by ID server-side
+- [x] Renders `<ProjectForm />` pre-populated with existing data
+- [x] On submit: `UPDATE projects WHERE id = ?`
 
 ## 5.5 About Page Editor (`app/admin/about/page.tsx`)
 - [ ] Bio: Markdown textarea + preview (same pattern as project description)
