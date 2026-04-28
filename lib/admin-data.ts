@@ -2,7 +2,8 @@ import { unstable_noStore as noStore } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 import { fallbackProjects } from '@/lib/data'
-import type { ContactMessage, Project } from '@/lib/supabase/types'
+import { fallbackSettings } from '@/lib/data'
+import type { ContactMessage, Project, SiteSetting } from '@/lib/supabase/types'
 
 export async function getAdminDashboardData() {
   noStore()
@@ -56,4 +57,31 @@ export async function getAdminMessages() {
     .order('created_at', { ascending: false })
 
   return (data ?? []) as ContactMessage[]
+}
+
+export async function getAdminSettingsData() {
+  noStore()
+
+  if (!hasSupabaseBrowserEnv) {
+    return {
+      settings: fallbackSettings,
+      projects: fallbackProjects,
+    }
+  }
+
+  const supabase = await createClient()
+  const [{ data: settings }, { data: projects }] = await Promise.all([
+    supabase.from('site_settings').select('*'),
+    supabase.from('projects').select('*').order('created_at', { ascending: false }),
+  ])
+
+  return {
+    settings: {
+      ...fallbackSettings,
+      ...Object.fromEntries(
+        ((settings ?? []) as SiteSetting[]).map((setting) => [setting.key, setting.value || ''])
+      ),
+    },
+    projects: (projects ?? []) as Project[],
+  }
 }

@@ -773,10 +773,10 @@ Used by both Create and Edit pages — accept optional initial data prop.
 - [x] Count badge in sidebar reflects unread count
 
 ## 5.7 Site Settings (`app/admin/settings/page.tsx`)
-- [ ] Form fields for all `site_settings` keys: student name, tagline, email, LinkedIn URL, Behance URL
-- [ ] Hero Image: single image uploader → `site-assets/hero.jpg`
-- [ ] Featured Projects Picker: select up to 3 published projects (checkbox list) → sets `is_featured`
-- [ ] SEO: default meta title, description, OG image upload
+- [x] Form fields for all `site_settings` keys: student name, tagline, email, LinkedIn URL, Behance URL
+- [x] Hero Image: single image uploader → `site-assets/hero.jpg`
+- [x] Featured Projects Picker: select up to 3 published projects (checkbox list) → sets `is_featured`
+- [x] SEO: default meta title, description, OG image upload
 - [ ] Save button: upserts all settings rows in a single transaction
 
 ## ✅ Phase 5 Done When:

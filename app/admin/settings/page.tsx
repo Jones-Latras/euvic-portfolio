@@ -1,10 +1,16 @@
-export default function AdminSettingsPage() {
+import { SiteSettingsForm } from '@/components/admin/SiteSettingsForm'
+import { getAdminSettingsData } from '@/lib/admin-data'
+
+export default async function AdminSettingsPage() {
+  const { settings, projects } = await getAdminSettingsData()
+
   return (
-    <div className="border border-[var(--border)] bg-[var(--surface)] p-6">
-      <h1 className="text-3xl font-semibold">Settings</h1>
-      <p className="mt-3 max-w-prose text-sm leading-relaxed text-[var(--muted)]">
-        Site settings editing belongs to Phase 5 after Supabase write flows are connected.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">Site</p>
+        <h1 className="mt-2 text-3xl font-semibold">Settings</h1>
+      </div>
+      <SiteSettingsForm settings={settings} projects={projects} />
     </div>
   )
 }
