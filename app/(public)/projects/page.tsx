@@ -49,15 +49,23 @@ export default async function ProjectsPage({
   return (
     <section className="px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
       <div className="mx-auto max-w-7xl space-y-5">
-        <ProjectFilters
-          category={params.category}
-          tag={params.tag}
-          sort={params.sort}
-          total={result.total}
-        />
+        <div className="max-w-3xl space-y-2">
+          <h1 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">
+            Projects
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
+            Technical drawings, design studies, rendering concepts, and documentation packages.
+          </p>
+        </div>
         {result.projects.length ? (
           <>
             {featuredProject ? <FeaturedProject project={featuredProject} /> : null}
+            <ProjectFilters
+              category={params.category}
+              tag={params.tag}
+              sort={params.sort}
+              total={result.total}
+            />
             {gridProjects.length ? (
               <div className="space-y-5">
                 <div className="flex items-end justify-between gap-4">
