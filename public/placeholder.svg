@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Architectural drawing placeholder">
+  <rect width="1200" height="800" fill="#e5e7eb"/>
+  <path d="M160 620h880M240 620V270l360-150 360 150v350M330 620V340h220v280M650 620V350h210v270M240 270h720M600 120v500" fill="none" stroke="#64748b" stroke-width="12" stroke-linecap="square"/>
+  <path d="M690 420h130M690 500h130M370 420h140M370 500h140" fill="none" stroke="#94a3b8" stroke-width="8"/>
+</svg>
