@@ -16,15 +16,17 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  if (hasSupabaseBrowserEnv) {
-    const supabase = await createClient()
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
+  if (!hasSupabaseBrowserEnv) {
+    redirect('/login')
+  }
 
-    if (!session) {
-      redirect('/login')
-    }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
   }
 
   const { messages } = await getAdminDashboardData()

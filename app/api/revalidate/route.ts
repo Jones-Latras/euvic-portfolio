@@ -6,15 +6,17 @@ import { hasSupabaseBrowserEnv } from '@/lib/supabase/config'
 const allowedPaths = ['/', '/projects', '/about', '/contact']
 
 export async function POST(request: Request) {
-  if (hasSupabaseBrowserEnv) {
-    const supabase = await createClient()
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
+  if (!hasSupabaseBrowserEnv) {
+    return NextResponse.json({ error: 'Supabase is not configured.' }, { status: 503 })
+  }
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const body = (await request.json().catch(() => ({}))) as { paths?: string[] }
