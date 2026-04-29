@@ -137,9 +137,15 @@ export async function getSettings() {
   if (!hasSupabaseBrowserEnv) return fallbackSettings
   const supabase = await createClient()
   const { data } = await supabase.from('site_settings').select('*')
-  return Object.fromEntries(
-    (data as SiteSetting[] | null)?.map((setting) => [setting.key, setting.value || '']) ?? []
-  ) as typeof fallbackSettings
+  const settings = { ...fallbackSettings }
+
+  for (const setting of (data as SiteSetting[] | null) ?? []) {
+    if (setting.key in settings && setting.value?.trim()) {
+      settings[setting.key as keyof typeof fallbackSettings] = setting.value
+    }
+  }
+
+  return settings
 }
 
 export async function getProjects() {
