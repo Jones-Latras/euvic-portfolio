@@ -96,29 +96,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[var(--background)] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-8">
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <div className="space-y-3">
-              <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">
-                Selected Works
-              </p>
-              <h2 className="font-display text-3xl font-semibold">Featured Projects</h2>
+      {projects.length ? (
+        <section className="bg-[var(--background)] px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+              <div className="space-y-3">
+                <p className="font-mono text-xs uppercase tracking-wide text-[var(--muted)]">
+                  Selected Works
+                </p>
+                <h2 className="font-display text-3xl font-semibold">Featured Projects</h2>
+              </div>
+              <Link
+                href="/projects"
+                className="focus-ring inline-flex min-h-11 items-center text-sm font-semibold text-[var(--foreground)] transition-all duration-150 ease-in-out hover:text-slate-600 active:scale-95 dark:hover:text-slate-300"
+              >
+                View All Projects
+              </Link>
             </div>
-            <Link
-              href="/projects"
-              className="focus-ring inline-flex min-h-11 items-center text-sm font-semibold text-[var(--foreground)] transition-all duration-150 ease-in-out hover:text-slate-600 active:scale-95 dark:hover:text-slate-300"
-            >
-              View All Projects
-            </Link>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => (
+                <ProjectCard key={project.id} project={project} variant="featured" />
+              ))}
+            </div>
           </div>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} variant="featured" />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="border-y border-[var(--border)] bg-[var(--surface)] px-4 py-8 sm:px-6 lg:px-8">
         <div className="scroll-fade-in mx-auto flex max-w-7xl gap-3 overflow-x-auto">
