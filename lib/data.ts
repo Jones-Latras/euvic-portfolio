@@ -175,15 +175,8 @@ export async function getFilteredProjects({
   const safePage = Number.isFinite(page) && page > 0 ? page : 1
   const offset = (safePage - 1) * pageSize
 
-  if (!hasSupabaseBrowserEnv) {
-    const filtered = fallbackProjects
-      .filter((project) => (!category ? true : project.category === category))
-      .filter((project) => (!tag ? true : project.tags?.includes(tag)))
-      .sort((a, b) => {
-        if (sort === 'oldest') return String(a.created_at).localeCompare(String(b.created_at))
-        if (sort === 'az') return a.title.localeCompare(b.title)
-        return String(b.created_at).localeCompare(String(a.created_at))
-      })
+  const getFallbackResult = () => {
+    const filtered = filterProjects(fallbackProjects, { category, tag, sort })
 
     return {
       projects: filtered.slice(offset, offset + pageSize),
@@ -192,6 +185,8 @@ export async function getFilteredProjects({
       pageSize,
     }
   }
+
+  if (!hasSupabaseBrowserEnv) return getFallbackResult()
 
   const supabase = await createClient()
   let query = supabase
@@ -207,12 +202,38 @@ export async function getFilteredProjects({
 
   const { data, count } = await query.range(offset, offset + pageSize - 1)
 
+  if (!data?.length && !category && !tag && !sort) {
+    return getFallbackResult()
+  }
+
   return {
     projects: data?.length ? data : [],
     total: count ?? 0,
     page: safePage,
     pageSize,
   }
+}
+
+function filterProjects(
+  projects: Project[],
+  {
+    category,
+    tag,
+    sort,
+  }: {
+    category?: string
+    tag?: string
+    sort?: string
+  }
+) {
+  return projects
+    .filter((project) => (!category ? true : project.category === category))
+    .filter((project) => (!tag ? true : project.tags?.includes(tag)))
+    .sort((a, b) => {
+      if (sort === 'oldest') return String(a.created_at).localeCompare(String(b.created_at))
+      if (sort === 'az') return a.title.localeCompare(b.title)
+      return String(b.created_at).localeCompare(String(a.created_at))
+    })
 }
 
 export async function getFeaturedProjects() {
