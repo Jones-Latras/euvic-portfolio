@@ -15,11 +15,14 @@ BEGIN
     DO UPDATE SET value = EXCLUDED.value, updated_at = NOW();
   END LOOP;
 
-  UPDATE projects SET is_featured = FALSE;
+  UPDATE projects
+  SET is_featured = FALSE
+  WHERE is_featured = TRUE
+    AND NOT (id = ANY(COALESCE(featured_project_ids, ARRAY[]::UUID[])));
 
   UPDATE projects
   SET is_featured = TRUE
-  WHERE id = ANY(featured_project_ids)
+  WHERE id = ANY(COALESCE(featured_project_ids, ARRAY[]::UUID[]))
     AND is_published = TRUE;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
