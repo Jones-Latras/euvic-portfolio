@@ -8,14 +8,13 @@ import { ArrowLeft, ArrowRight, Download } from 'lucide-react'
 import { ViewTracker } from '@/components/projects/ViewTracker'
 import { LightboxGallery } from '@/components/projects/LightboxGallery'
 import { PROJECT_CATEGORIES } from '@/lib/constants'
-import { getProjectBySlug, getProjects } from '@/lib/data'
+import { fallbackProjects, getProjectBySlug, getProjects } from '@/lib/data'
 import { absoluteUrl, cn } from '@/lib/utils'
 
 export const revalidate = 1800
 
 export async function generateStaticParams() {
-  const projects = await getProjects()
-  return projects.map((project) => ({ slug: project.slug }))
+  return fallbackProjects.map((project) => ({ slug: project.slug }))
 }
 
 export async function generateMetadata({

@@ -13,6 +13,7 @@ const contactSchema = z.object({
 
 const submissions = new Map<string, number[]>()
 const limitWindowMs = 60 * 60 * 1000
+const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>'
 
 export async function POST(request: NextRequest) {
   const parsed = contactSchema.safeParse(await request.json().catch(() => null))
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (process.env.RESEND_API_KEY && process.env.CONTACT_FORM_TO_EMAIL) {
       const resend = new Resend(process.env.RESEND_API_KEY)
       await resend.emails.send({
-        from: 'Portfolio <noreply@yourdomain.com>',
+        from: resendFromEmail,
         to: process.env.CONTACT_FORM_TO_EMAIL,
         subject: `New inquiry: ${parsed.data.subject}`,
         text: `From: ${parsed.data.name} (${parsed.data.email})\n\n${parsed.data.message}`,
