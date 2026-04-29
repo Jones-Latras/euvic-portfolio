@@ -18,10 +18,12 @@ export const PROJECT_TAGS = [
 ] as const
 
 export const CONTACT_SUBJECTS = [
+  'Project Inquiry',
+  'Drafting Request',
+  '3D Visualization',
+  'Academic Collaboration',
   'Job Opportunity',
-  'Academic Inquiry',
-  'Freelance Project',
-  'Other',
+  'General Message',
 ] as const
 
 export const STORAGE_BUCKETS = {

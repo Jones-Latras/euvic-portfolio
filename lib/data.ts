@@ -108,8 +108,7 @@ export const fallbackAbout: About = {
   id: 'about',
   bio:
     'Architectural drafting design student focused on precise documentation, thoughtful space planning, and clear visual communication. This portfolio collects coursework and independent studies across floor plans, elevations, 3D renders, and technical drawing sets.',
-  photo_url:
-    'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1200&q=75',
+  photo_url: '/profile.jpg',
   cv_url: '',
   updated_at: null,
 }

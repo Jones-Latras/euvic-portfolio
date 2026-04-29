@@ -7,6 +7,9 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CONTACT_SUBJECTS } from '@/lib/constants'
 
+const fieldClassName =
+  'focus-ring min-h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--background)]/70 px-4 text-sm transition-all duration-200 ease-out hover:border-slate-500 focus-visible:border-slate-300 focus-visible:shadow-[0_0_0_3px_rgba(148,163,184,0.15)]'
+
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
 const schema = z.object({
@@ -65,7 +68,7 @@ export function ContactForm() {
           id="name"
           type="text"
           autoComplete="name"
-          className="focus-ring min-h-11 w-full border border-[var(--border)] bg-[var(--surface)] px-3 text-sm transition-all duration-150 ease-in-out hover:border-slate-500"
+          className={fieldClassName}
           {...register('name')}
         />
       </Field>
@@ -74,7 +77,7 @@ export function ContactForm() {
           id="email"
           type="email"
           autoComplete="email"
-          className="focus-ring min-h-11 w-full border border-[var(--border)] bg-[var(--surface)] px-3 text-sm transition-all duration-150 ease-in-out hover:border-slate-500"
+          className={fieldClassName}
           {...register('email')}
         />
       </Field>
@@ -84,7 +87,7 @@ export function ContactForm() {
         </label>
         <select
           id="subject"
-          className="focus-ring min-h-11 w-full border border-[var(--border)] bg-[var(--surface)] px-3 text-sm transition-all duration-150 ease-in-out hover:border-slate-500"
+          className={fieldClassName}
           {...register('subject')}
         >
           {CONTACT_SUBJECTS.map((subject) => (
@@ -99,7 +102,7 @@ export function ContactForm() {
         <textarea
           id="message"
           rows={6}
-          className="focus-ring w-full resize-y border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-sm leading-relaxed transition-all duration-150 ease-in-out hover:border-slate-500"
+          className={`${fieldClassName} resize-y py-3 leading-relaxed`}
           {...register('message')}
         />
         {errors.message?.message ? (
@@ -109,7 +112,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="focus-ring inline-flex min-h-11 items-center gap-2 border border-accent bg-accent px-5 text-sm font-semibold text-white transition-all duration-150 ease-in-out hover:bg-accent-light active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-300 dark:bg-slate-200 dark:text-slate-950"
+        className="focus-ring inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-100 bg-slate-100 px-5 text-sm font-bold text-slate-950 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-white active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
       >
         <Send aria-hidden="true" size={16} />
         {status === 'loading' ? 'Sending...' : 'Send Message'}

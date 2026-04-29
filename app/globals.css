@@ -58,6 +58,26 @@ textarea {
   font: inherit;
 }
 
+button,
+[role="button"],
+a,
+select,
+summary,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"] {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 ::selection {
   background: #cbd5e1;
   color: #111827;
