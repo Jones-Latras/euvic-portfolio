@@ -2,10 +2,10 @@
 
 import Image from 'next/image'
 import { FileText, ImagePlus, Trash2, Upload } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKETS } from '@/lib/constants'
-import { cn } from '@/lib/utils'
+import { cn, slugify } from '@/lib/utils'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -25,6 +25,7 @@ export function ImageUploader({
   onImagesChange,
   onCoverChange,
   onPdfChange,
+  onUploadingChange,
 }: {
   projectId: string
   images: string[]
@@ -33,11 +34,18 @@ export function ImageUploader({
   onImagesChange: (images: string[]) => void
   onCoverChange: (coverImage: string) => void
   onPdfChange: (pdfUrl: string) => void
+  onUploadingChange?: (isUploading: boolean) => void
 }) {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const pdfInputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
   const [uploads, setUploads] = useState<UploadState[]>([])
+  const [activeUploads, setActiveUploads] = useState(0)
+  const isUploading = activeUploads > 0
+
+  useEffect(() => {
+    onUploadingChange?.(isUploading)
+  }, [isUploading, onUploadingChange])
 
   async function uploadImages(files: FileList | File[]) {
     const incomingFiles = Array.from(files)
@@ -72,14 +80,16 @@ export function ImageUploader({
     const nextImages = [...images]
 
     for (const file of validFiles) {
+      setActiveUploads((count) => count + 1)
       setUploads((current) => [...current, { name: file.name, progress: 10 }])
-      const path = `${projectId}/${crypto.randomUUID()}-${file.name}`
+      const path = `${projectId}/${uniqueStorageName(file.name)}`
       const { error } = await supabase.storage.from(STORAGE_BUCKETS.projectImages).upload(path, file, {
         cacheControl: '3600',
         upsert: false,
       })
 
       if (error) {
+        setActiveUploads((count) => Math.max(0, count - 1))
         setUploads((current) =>
           current.map((item) =>
             item.name === file.name ? { ...item, progress: 100, error: error.message } : item
@@ -93,10 +103,12 @@ export function ImageUploader({
       setUploads((current) =>
         current.map((item) => (item.name === file.name ? { ...item, progress: 100 } : item))
       )
+      setActiveUploads((count) => Math.max(0, count - 1))
     }
 
     onImagesChange(nextImages)
     if (!coverImage && nextImages[0]) onCoverChange(nextImages[0])
+    if (imageInputRef.current) imageInputRef.current.value = ''
   }
 
   async function uploadPdf(file?: File) {
@@ -118,7 +130,8 @@ export function ImageUploader({
     }
 
     const supabase = createClient()
-    const path = `${projectId}/${file.name}`
+    const path = `${projectId}/${uniqueStorageName(file.name)}`
+    setActiveUploads((count) => count + 1)
     setUploads((current) => [...current, { name: file.name, progress: 10 }])
     const { error } = await supabase.storage.from(STORAGE_BUCKETS.projectPdfs).upload(path, file, {
       cacheControl: '3600',
@@ -126,6 +139,7 @@ export function ImageUploader({
     })
 
     if (error) {
+      setActiveUploads((count) => Math.max(0, count - 1))
       setUploads((current) =>
         current.map((item) =>
           item.name === file.name ? { ...item, progress: 100, error: error.message } : item
@@ -136,9 +150,11 @@ export function ImageUploader({
 
     const { data } = supabase.storage.from(STORAGE_BUCKETS.projectPdfs).getPublicUrl(path)
     onPdfChange(data.publicUrl)
+    setActiveUploads((count) => Math.max(0, count - 1))
     setUploads((current) =>
       current.map((item) => (item.name === file.name ? { ...item, progress: 100 } : item))
     )
+    if (pdfInputRef.current) pdfInputRef.current.value = ''
   }
 
   async function removeImage(image: string) {
@@ -196,11 +212,13 @@ export function ImageUploader({
         <button
           type="button"
           onClick={() => imageInputRef.current?.click()}
-          className="focus-ring inline-flex min-h-11 items-center gap-2 border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95"
+          disabled={isUploading}
+          className="focus-ring inline-flex min-h-11 items-center gap-2 border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <ImagePlus aria-hidden="true" size={16} />
           Add Images
         </button>
+        {isUploading ? <p className="mt-3 text-sm text-[var(--muted)]">Upload in progress...</p> : null}
       </div>
 
       {uploads.length ? (
@@ -262,7 +280,8 @@ export function ImageUploader({
         <button
           type="button"
           onClick={() => pdfInputRef.current?.click()}
-          className="focus-ring inline-flex min-h-11 items-center gap-2 border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95"
+          disabled={isUploading}
+          className="focus-ring inline-flex min-h-11 items-center gap-2 border border-[var(--border)] px-4 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Upload aria-hidden="true" size={16} />
           Upload PDF
@@ -292,4 +311,15 @@ function storagePathFromPublicUrl(url: string, bucket: string) {
   const index = url.indexOf(marker)
   if (index === -1) return null
   return decodeURIComponent(url.slice(index + marker.length))
+}
+
+function uniqueStorageName(fileName: string) {
+  const dotIndex = fileName.lastIndexOf('.')
+  const rawName = dotIndex > 0 ? fileName.slice(0, dotIndex) : fileName
+  const rawExtension = dotIndex > 0 ? fileName.slice(dotIndex + 1) : ''
+  const safeName = slugify(rawName) || 'file'
+  const safeExtension = slugify(rawExtension)
+  return safeExtension
+    ? `${crypto.randomUUID()}-${safeName}.${safeExtension}`
+    : `${crypto.randomUUID()}-${safeName}`
 }

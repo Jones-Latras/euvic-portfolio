@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -32,6 +32,7 @@ const schema = z.object({
 
 type ProjectFields = z.infer<typeof schema>
 type SpecRow = { id: string; key: string; value: string }
+type DatabaseError = { code?: string; message: string }
 
 export function ProjectForm({
   projectId,
@@ -48,6 +49,7 @@ export function ProjectForm({
   const [images, setImages] = useState<string[]>(initialProject?.images ?? [])
   const [coverImage, setCoverImage] = useState(initialProject?.cover_image ?? '')
   const [pdfUrl, setPdfUrl] = useState(initialProject?.pdf_url ?? '')
+  const [filesUploading, setFilesUploading] = useState(false)
   const [specs, setSpecs] = useState<SpecRow[]>(() => {
     const value = initialProject?.tech_specs
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -83,6 +85,10 @@ export function ProjectForm({
   const shortDesc = watch('short_desc') || ''
   const description = watch('description') || ''
   const isEditing = Boolean(initialProject)
+  const isBusy = Boolean(saving) || filesUploading
+  const handleUploadingChange = useCallback((isUploading: boolean) => {
+    setFilesUploading(isUploading)
+  }, [])
 
   const specObject = useMemo(
     () =>
@@ -102,8 +108,13 @@ export function ProjectForm({
   }
 
   async function ensureUniqueSlug(slug: string) {
-    if (!hasSupabaseEnv || !slug) return
-    const uniqueSlug = await getUniqueSlug(slug)
+    const normalizedSlug = slugify(slug)
+    if (!normalizedSlug) return
+    if (!hasSupabaseEnv) {
+      setValue('slug', normalizedSlug, { shouldValidate: true })
+      return
+    }
+    const uniqueSlug = await getUniqueSlug(normalizedSlug)
     if (uniqueSlug !== slug) {
       setValue('slug', uniqueSlug, { shouldValidate: true })
     }
@@ -112,6 +123,7 @@ export function ProjectForm({
   async function getUniqueSlug(slug: string) {
     const supabase = createClient()
     const baseSlug = slugify(slug)
+    if (!baseSlug) return `project-${projectId.slice(0, 8)}`
     let candidate = baseSlug
     let suffix = 2
 
@@ -132,6 +144,13 @@ export function ProjectForm({
     setMessage('')
     setSaving(publish ? 'publish' : 'draft')
 
+    if (filesUploading) {
+      setSaving(null)
+      setMessage('Wait for file uploads to finish before saving the project.')
+      showToast('Wait for file uploads to finish before saving the project.', 'error')
+      return
+    }
+
     if (!hasSupabaseEnv) {
       setSaving(null)
       setMessage('Supabase credentials are not configured yet.')
@@ -139,7 +158,8 @@ export function ProjectForm({
       return
     }
 
-    const uniqueSlug = hasSupabaseEnv ? await getUniqueSlug(values.slug) : values.slug
+    const normalizedSlug = slugify(values.slug || values.title) || `project-${projectId.slice(0, 8)}`
+    const uniqueSlug = hasSupabaseEnv ? await getUniqueSlug(normalizedSlug) : normalizedSlug
     if (uniqueSlug !== values.slug) {
       setValue('slug', uniqueSlug, { shouldValidate: true })
     }
@@ -162,14 +182,25 @@ export function ProjectForm({
     }
 
     const supabase = createClient()
-    const { error } = isEditing
+    let { error } = isEditing
       ? await supabase.from('projects').update(payload as never).eq('id', projectId)
-      : await supabase.from('projects').insert(payload as never)
+      : await supabase.from('projects').upsert(payload as never, { onConflict: 'id' })
+
+    if (error?.code === '23505' && error.message.includes('projects_slug_key')) {
+      const retrySlug = await getUniqueSlug(`${uniqueSlug}-${crypto.randomUUID().slice(0, 8)}`)
+      setValue('slug', retrySlug, { shouldValidate: true })
+      const retryPayload = { ...payload, slug: retrySlug }
+      const retry = isEditing
+        ? await supabase.from('projects').update(retryPayload as never).eq('id', projectId)
+        : await supabase.from('projects').upsert(retryPayload as never, { onConflict: 'id' })
+      error = retry.error
+    }
 
     setSaving(null)
     if (error) {
-      setMessage(error.message)
-      showToast(error.message, 'error')
+      const friendlyMessage = projectSaveErrorMessage(error)
+      setMessage(friendlyMessage)
+      showToast(friendlyMessage, 'error')
       return
     }
 
@@ -339,6 +370,7 @@ export function ProjectForm({
           onImagesChange={setImages}
           onCoverChange={setCoverImage}
           onPdfChange={setPdfUrl}
+          onUploadingChange={handleUploadingChange}
         />
       </section>
 
@@ -350,20 +382,20 @@ export function ProjectForm({
         <div className="flex flex-col gap-3 sm:flex-row">
           <button
             type="submit"
-            disabled={Boolean(saving)}
+            disabled={isBusy}
             className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 border border-[var(--border)] px-5 text-sm font-semibold transition-all duration-150 ease-in-out hover:border-slate-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Save aria-hidden="true" size={16} />
-            {saving === 'draft' ? 'Saving...' : 'Save as Draft'}
+            {filesUploading ? 'Uploading files...' : saving === 'draft' ? 'Saving...' : 'Save as Draft'}
           </button>
           <button
             type="button"
-            disabled={Boolean(saving)}
+            disabled={isBusy}
             onClick={handleSubmit((values) => save(values, true))}
             className="focus-ring inline-flex min-h-11 items-center justify-center gap-2 border border-[var(--foreground)] bg-[var(--foreground)] px-5 text-sm font-semibold text-[var(--background)] transition-all duration-150 ease-in-out hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Upload aria-hidden="true" size={16} />
-            {saving === 'publish' ? 'Publishing...' : 'Publish'}
+            {filesUploading ? 'Uploading files...' : saving === 'publish' ? 'Publishing...' : 'Publish'}
           </button>
         </div>
       </section>
@@ -371,6 +403,22 @@ export function ProjectForm({
       {message ? <p role="status" className="text-sm leading-relaxed text-[var(--muted)]">{message}</p> : null}
     </form>
   )
+}
+
+function projectSaveErrorMessage(error: DatabaseError) {
+  if (error.code === '23505') {
+    return 'A project with this slug already exists. Change the slug and save again.'
+  }
+
+  if (error.code === '42501' || error.message.toLowerCase().includes('row-level security')) {
+    return 'Your admin session no longer has permission to save. Log in again, then retry.'
+  }
+
+  if (error.code === '23502') {
+    return 'A required project field is missing. Check the title, slug, and category.'
+  }
+
+  return error.message || 'The project could not be saved. Check your connection and try again.'
 }
 
 function Field({
