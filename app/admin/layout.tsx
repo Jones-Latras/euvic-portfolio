@@ -20,10 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect('/login')
   }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user) {
     redirect('/login')
@@ -40,4 +37,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </div>
     </section>
   )
+}
+
+async function getCurrentUser() {
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    return user
+  } catch {
+    return null
+  }
 }
