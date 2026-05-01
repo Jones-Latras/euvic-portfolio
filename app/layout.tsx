@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { unstable_noStore as noStore } from 'next/cache'
 import { DM_Mono, Manrope, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
@@ -50,6 +51,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  noStore()
   const settings = await getSettings()
 
   return (

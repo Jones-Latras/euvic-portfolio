@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { unstable_noStore as noStore } from 'next/cache'
 import { Download, Mail, Phone } from 'lucide-react'
 import { getSettings } from '@/lib/data'
 
 export async function Footer() {
+  noStore()
   const settings = await getSettings()
   const year = new Date().getFullYear()
   const email = settings.email || 'you@email.com'
