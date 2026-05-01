@@ -19,6 +19,7 @@ type SettingsFields = {
   tagline: string
   email: string
   contact_number: string
+  location: string
   linkedin_url: string
   behance_url: string
   github_url: string
@@ -176,6 +177,7 @@ export function SiteSettingsForm({
         <TextField label="Tagline" id="tagline" register={register('tagline')} />
         <TextField label="Email" id="email" type="email" register={register('email')} />
         <TextField label="Contact Number" id="contact_number" type="tel" register={register('contact_number')} />
+        <TextField label="Location" id="location" register={register('location')} />
         <TextField label="LinkedIn URL" id="linkedin_url" register={register('linkedin_url')} />
         <TextField label="Behance URL" id="behance_url" register={register('behance_url')} />
         <TextField label="GitHub URL" id="github_url" register={register('github_url')} />

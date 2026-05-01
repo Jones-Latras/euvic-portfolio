@@ -21,6 +21,7 @@ const availability = [
 export default async function ContactPage() {
   const settings = await getSettings()
   const email = settings.email || 'you@email.com'
+  const location = settings.location || 'Cagayan de Oro, PH'
 
   return (
     <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
@@ -32,7 +33,7 @@ export default async function ContactPage() {
               <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
                 <span>Contact / 04</span>
                 <span aria-hidden="true">/</span>
-                <span>Cagayan de Oro, PH</span>
+                <span>{location}</span>
               </div>
               <h1 className="max-w-3xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
                 Let&apos;s talk about drafting, design, or opportunities.
@@ -50,7 +51,7 @@ export default async function ContactPage() {
                 </p>
                 <dl className="mt-5 space-y-4">
                   <ContactMeta label="Email" value={email} href={`mailto:${email}`} />
-                  <ContactMeta label="Location" value="Cagayan de Oro, Philippines" />
+                  <ContactMeta label="Location" value={location} />
                   <ContactMeta label="Response Time" value="Usually within 1-2 days" />
                 </dl>
               </article>

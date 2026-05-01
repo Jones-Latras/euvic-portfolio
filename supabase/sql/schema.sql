@@ -158,6 +158,7 @@ INSERT INTO site_settings (key, value) VALUES
   ('tagline', 'Architectural Drafting & Design'),
   ('email', 'you@email.com'),
   ('contact_number', ''),
+  ('location', 'Cagayan de Oro, PH'),
   ('linkedin_url', ''),
   ('behance_url', ''),
   ('github_url', ''),

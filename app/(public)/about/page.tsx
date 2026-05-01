@@ -59,6 +59,7 @@ export default async function AboutPage() {
   const [{ about, education, skills }, settings] = await Promise.all([getAboutData(), getSettings()])
   const name = settings.student_name || 'Euvic G. Abellano'
   const email = settings.email || 'you@email.com'
+  const location = settings.location || 'Cagayan de Oro, PH'
   const cvUrl = about.cv_url || settings.cv_url
 
   return (
@@ -68,6 +69,7 @@ export default async function AboutPage() {
           <ProfileCard
             name={name}
             email={email}
+            location={location}
             photoUrl={about.photo_url}
             cvUrl={cvUrl || ''}
           />
@@ -79,7 +81,7 @@ export default async function AboutPage() {
                 <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
                   <span>About / 02</span>
                   <span aria-hidden="true">/</span>
-                  <span>Cagayan de Oro, PH</span>
+                  <span>{location}</span>
                 </div>
                 <h1 className="max-w-4xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
                   Designing clear technical drawings for thoughtful residential spaces.
@@ -176,11 +178,13 @@ export default async function AboutPage() {
 function ProfileCard({
   name,
   email,
+  location,
   photoUrl,
   cvUrl,
 }: {
   name: string
   email: string
+  location: string
   photoUrl: string | null
   cvUrl: string
 }) {
@@ -208,7 +212,7 @@ function ProfileCard({
             </p>
           </div>
           <dl className="space-y-3 border-y border-[var(--border)] py-4 text-sm">
-            <ProfileMeta label="Location" value="Cagayan de Oro, PH" />
+            <ProfileMeta label="Location" value={location} />
             <ProfileMeta label="Focus" value="Drafting · Visualization · Presentation" />
             <ProfileMeta label="Email" value={email} />
           </dl>

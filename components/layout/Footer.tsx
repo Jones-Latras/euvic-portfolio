@@ -10,6 +10,7 @@ export async function Footer() {
   const email = settings.email || 'you@email.com'
   const contactNumber = settings.contact_number || ''
   const contactHref = contactNumber ? `tel:${contactNumber.replace(/[^\d+]/g, '')}` : ''
+  const location = settings.location || 'Cagayan de Oro, PH'
 
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--surface)]">
@@ -24,7 +25,7 @@ export async function Footer() {
             </p>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-[var(--muted)]">
-            Cagayan de Oro, PH. Residential plans, technical presentation boards, and
+            {location}. Residential plans, technical presentation boards, and
             architectural visualization studies.
           </p>
         </div>
