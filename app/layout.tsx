@@ -56,6 +56,14 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "document.querySelectorAll('[fdprocessedid]').forEach(function (node) { node.removeAttribute('fdprocessedid'); });",
+          }}
+        />
+      </head>
       <body className={`${manrope.variable} ${spaceGrotesk.variable} ${dmMono.variable} min-h-screen antialiased`}>
         <ThemeProvider>
           <ToastProvider>
