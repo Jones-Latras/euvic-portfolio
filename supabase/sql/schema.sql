@@ -157,6 +157,7 @@ INSERT INTO site_settings (key, value) VALUES
   ('student_name', 'Your Name'),
   ('tagline', 'Architectural Drafting & Design'),
   ('email', 'you@email.com'),
+  ('contact_number', ''),
   ('linkedin_url', ''),
   ('behance_url', ''),
   ('github_url', ''),

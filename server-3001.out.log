@@ -2,3 +2,29 @@
 > architectural-portfolio@0.1.0 dev
 > next dev -p 3001
 
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.137.1:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 1388ms (868 modules)
+ HEAD /admin 307 in 2494ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 749ms (880 modules)
+ HEAD /login 200 in 1380ms
+ ✓ Compiled in 4.8s (337 modules)
+ ✓ Compiled in 712ms (337 modules)
+ ✓ Compiled in 398ms (337 modules)
+ ✓ Compiled in 578ms (337 modules)
+ ✓ Compiled in 491ms (337 modules)
+ ✓ Compiled in 779ms (337 modules)
+ ✓ Compiled in 622ms (337 modules)
+ ✓ Compiled in 481ms (337 modules)
+ ✓ Compiled in 696ms (337 modules)
+ ✓ Compiled in 385ms (337 modules)
+ ✓ Compiled in 647ms (337 modules)
+ ✓ Compiled in 529ms (337 modules)
+ ✓ Compiled in 700ms (337 modules)

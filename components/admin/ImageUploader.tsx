@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKETS } from '@/lib/constants'
 import { cn, slugify } from '@/lib/utils'
+import { ImageCropDialog } from '@/components/admin/ImageCropDialog'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -41,6 +42,7 @@ export function ImageUploader({
   const [dragging, setDragging] = useState(false)
   const [uploads, setUploads] = useState<UploadState[]>([])
   const [activeUploads, setActiveUploads] = useState(0)
+  const [cropBatch, setCropBatch] = useState<{ remaining: File[]; cropped: File[] } | null>(null)
   const isUploading = activeUploads > 0
 
   useEffect(() => {
@@ -109,6 +111,54 @@ export function ImageUploader({
     onImagesChange(nextImages)
     if (!coverImage && nextImages[0]) onCoverChange(nextImages[0])
     if (imageInputRef.current) imageInputRef.current.value = ''
+  }
+
+  function selectImageFiles(files: FileList | File[]) {
+    const incomingFiles = Array.from(files)
+    const validFiles = incomingFiles.filter((file) => {
+      const validType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
+      const validSize = file.size <= 20 * 1024 * 1024
+      return validType && validSize
+    })
+    const rejectedFiles = incomingFiles.filter((file) => !validFiles.includes(file))
+
+    if (rejectedFiles.length) {
+      setUploads((current) => [
+        ...current,
+        ...rejectedFiles.map((file) => ({
+          name: file.name,
+          progress: 0,
+          error: file.size > 20 * 1024 * 1024
+            ? 'Image must be 20MB or smaller.'
+            : 'Use a JPG, PNG, or WEBP image.',
+        })),
+      ])
+    }
+
+    if (validFiles.length) {
+      setCropBatch({ remaining: validFiles, cropped: [] })
+    } else if (imageInputRef.current) {
+      imageInputRef.current.value = ''
+    }
+  }
+
+  function cancelCropBatch() {
+    setCropBatch(null)
+    if (imageInputRef.current) imageInputRef.current.value = ''
+  }
+
+  function finishCrop(file: File) {
+    if (!cropBatch) return
+
+    const nextCropped = [...cropBatch.cropped, file]
+    const nextRemaining = cropBatch.remaining.slice(1)
+    if (nextRemaining.length) {
+      setCropBatch({ remaining: nextRemaining, cropped: nextCropped })
+      return
+    }
+
+    setCropBatch(null)
+    void uploadImages(nextCropped)
   }
 
   async function uploadPdf(file?: File) {
@@ -183,6 +233,14 @@ export function ImageUploader({
 
   return (
     <div className="space-y-6">
+      {cropBatch ? (
+        <ImageCropDialog
+          file={cropBatch.remaining[0]}
+          title={cropBatch.remaining.length > 1 ? `Crop Image (${cropBatch.cropped.length + 1})` : 'Crop Image'}
+          onCancel={cancelCropBatch}
+          onCrop={finishCrop}
+        />
+      ) : null}
       <div
         onDragOver={(event) => {
           event.preventDefault()
@@ -192,7 +250,7 @@ export function ImageUploader({
         onDrop={(event) => {
           event.preventDefault()
           setDragging(false)
-          void uploadImages(event.dataTransfer.files)
+          selectImageFiles(event.dataTransfer.files)
         }}
         className={cn(
           'border border-dashed border-[var(--border)] bg-[var(--surface)] p-5 transition-all duration-150 ease-in-out',
@@ -206,7 +264,7 @@ export function ImageUploader({
           multiple
           className="hidden"
           onChange={(event) => {
-            if (event.target.files) void uploadImages(event.target.files)
+            if (event.target.files) selectImageFiles(event.target.files)
           }}
         />
         <button

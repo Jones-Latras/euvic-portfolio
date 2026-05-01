@@ -8,6 +8,7 @@ import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKETS } from '@/lib/constants'
 import type { About, Education, Skill } from '@/lib/supabase/types'
+import { ImageCropDialog } from '@/components/admin/ImageCropDialog'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -30,6 +31,7 @@ export function AboutEditorForm({
   const [bio, setBio] = useState(about.bio || '')
   const [photoUrl, setPhotoUrl] = useState(about.photo_url || '')
   const [cvUrl, setCvUrl] = useState(about.cv_url || '')
+  const [pendingPhotoCrop, setPendingPhotoCrop] = useState<File | null>(null)
   const [educationRows, setEducationRows] = useState<EducationRow[]>(
     education.map((item) => ({ ...item, localId: item.id || crypto.randomUUID() }))
   )
@@ -70,6 +72,19 @@ export function AboutEditorForm({
     const { data } = supabase.storage.from(STORAGE_BUCKETS.profile).getPublicUrl(path)
     if (type === 'photo') setPhotoUrl(data.publicUrl)
     else setCvUrl(data.publicUrl)
+  }
+
+  function selectProfilePhoto(file: File | undefined) {
+    if (!file) return
+    setMessage('')
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setMessage('Use a JPG, PNG, or WEBP image.')
+      if (photoInputRef.current) photoInputRef.current.value = ''
+      return
+    }
+
+    setPendingPhotoCrop(file)
   }
 
   async function save() {
@@ -137,6 +152,21 @@ export function AboutEditorForm({
 
   return (
     <div className="space-y-8">
+      {pendingPhotoCrop ? (
+        <ImageCropDialog
+          file={pendingPhotoCrop}
+          title="Crop Profile Photo"
+          onCancel={() => {
+            if (photoInputRef.current) photoInputRef.current.value = ''
+            setPendingPhotoCrop(null)
+          }}
+          onCrop={(file) => {
+            if (photoInputRef.current) photoInputRef.current.value = ''
+            setPendingPhotoCrop(null)
+            void uploadProfileFile(file, 'photo')
+          }}
+        />
+      ) : null}
       <section className="grid gap-5 border border-[var(--border)] bg-[var(--surface)] p-5 lg:grid-cols-[16rem_1fr]">
         <div className="space-y-3">
           <input
@@ -144,7 +174,7 @@ export function AboutEditorForm({
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="hidden"
-            onChange={(event) => void uploadProfileFile(event.target.files?.[0], 'photo')}
+            onChange={(event) => selectProfilePhoto(event.target.files?.[0])}
           />
           <div className="relative h-[200px] w-[200px] overflow-hidden rounded-full bg-slate-200">
             {photoUrl ? <Image src={photoUrl} alt="Profile preview" fill sizes="200px" className="object-cover" /> : null}

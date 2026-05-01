@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { STORAGE_BUCKETS } from '@/lib/constants'
 import type { Project } from '@/lib/supabase/types'
 import { useToast } from '@/components/ui/Toast'
+import { ImageCropDialog } from '@/components/admin/ImageCropDialog'
 
 const hasSupabaseEnv =
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -17,6 +18,7 @@ type SettingsFields = {
   student_name: string
   tagline: string
   email: string
+  contact_number: string
   linkedin_url: string
   behance_url: string
   github_url: string
@@ -40,6 +42,10 @@ export function SiteSettingsForm({
   const { showToast } = useToast()
   const [heroImage, setHeroImage] = useState(settings.hero_image_url || '')
   const [ogImage, setOgImage] = useState(settings.seo_og_image || '')
+  const [pendingCrop, setPendingCrop] = useState<{
+    file: File
+    key: 'hero_image_url' | 'seo_og_image'
+  } | null>(null)
   const [featuredIds, setFeaturedIds] = useState(
     projects.filter((project) => project.is_featured).map((project) => project.id).slice(0, 3)
   )
@@ -79,6 +85,25 @@ export function SiteSettingsForm({
     const { data } = supabase.storage.from(STORAGE_BUCKETS.siteAssets).getPublicUrl(path)
     if (key === 'hero_image_url') setHeroImage(data.publicUrl)
     else setOgImage(data.publicUrl)
+  }
+
+  function selectAssetFile(file: File | undefined, key: 'hero_image_url' | 'seo_og_image') {
+    if (!file) return
+    setMessage('')
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setMessage('Use a JPG, PNG, or WEBP image.')
+      showToast('Use a JPG, PNG, or WEBP image.', 'error')
+      resetFileInput(key)
+      return
+    }
+
+    setPendingCrop({ file, key })
+  }
+
+  function resetFileInput(key: 'hero_image_url' | 'seo_og_image') {
+    const input = key === 'hero_image_url' ? heroInputRef.current : ogInputRef.current
+    if (input) input.value = ''
   }
 
   function toggleFeatured(projectId: string) {
@@ -130,10 +155,27 @@ export function SiteSettingsForm({
 
   return (
     <form onSubmit={handleSubmit(save)} className="space-y-8">
+      {pendingCrop ? (
+        <ImageCropDialog
+          file={pendingCrop.file}
+          title={pendingCrop.key === 'hero_image_url' ? 'Crop Hero Image' : 'Crop SEO OG Image'}
+          onCancel={() => {
+            resetFileInput(pendingCrop.key)
+            setPendingCrop(null)
+          }}
+          onCrop={(file) => {
+            const key = pendingCrop.key
+            resetFileInput(key)
+            setPendingCrop(null)
+            void uploadAsset(file, key)
+          }}
+        />
+      ) : null}
       <section className="grid gap-5 border border-[var(--border)] bg-[var(--surface)] p-5 md:grid-cols-2">
         <TextField label="Student Name" id="student_name" register={register('student_name')} />
         <TextField label="Tagline" id="tagline" register={register('tagline')} />
         <TextField label="Email" id="email" type="email" register={register('email')} />
+        <TextField label="Contact Number" id="contact_number" type="tel" register={register('contact_number')} />
         <TextField label="LinkedIn URL" id="linkedin_url" register={register('linkedin_url')} />
         <TextField label="Behance URL" id="behance_url" register={register('behance_url')} />
         <TextField label="GitHub URL" id="github_url" register={register('github_url')} />
@@ -144,13 +186,13 @@ export function SiteSettingsForm({
           title="Hero Image"
           image={heroImage}
           inputRef={heroInputRef}
-          onFile={(file) => void uploadAsset(file, 'hero_image_url')}
+          onFile={(file) => selectAssetFile(file, 'hero_image_url')}
         />
         <AssetPicker
           title="SEO OG Image"
           image={ogImage}
           inputRef={ogInputRef}
-          onFile={(file) => void uploadAsset(file, 'seo_og_image')}
+          onFile={(file) => selectAssetFile(file, 'seo_og_image')}
         />
       </section>
 

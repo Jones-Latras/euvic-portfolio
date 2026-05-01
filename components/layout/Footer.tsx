@@ -1,11 +1,13 @@
 import Link from 'next/link'
-import { Download, Mail } from 'lucide-react'
+import { Download, Mail, Phone } from 'lucide-react'
 import { getSettings } from '@/lib/data'
 
 export async function Footer() {
   const settings = await getSettings()
   const year = new Date().getFullYear()
   const email = settings.email || 'you@email.com'
+  const contactNumber = settings.contact_number || ''
+  const contactHref = contactNumber ? `tel:${contactNumber.replace(/[^\d+]/g, '')}` : ''
 
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--surface)]">
@@ -43,6 +45,15 @@ export async function Footer() {
             <Mail aria-hidden="true" size={16} />
             {email}
           </Link>
+          {contactNumber ? (
+            <Link
+              href={contactHref}
+              className="focus-ring inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--muted)] transition-all duration-200 ease-out hover:text-[var(--foreground)] active:scale-95"
+            >
+              <Phone aria-hidden="true" size={16} />
+              {contactNumber}
+            </Link>
+          ) : null}
           {settings.cv_url ? (
             <Link
               href={settings.cv_url}
